@@ -24,6 +24,24 @@ pml_test<-read.csv("pml-testing.csv",na.strings=c("NA","#DIV/0!", ""))
 pml_train1<-pml_train[,colSums(is.na(pml_train)) == 0]
 pml_test<-pml_test[,colSums(is.na(pml_train)) == 0]
 ##Removing near zero & zero Covariates
+
+
+Common error measures
+
+Mean squared error (or root mean squared error)
+	Continuous data, sensitive to outliers
+Median absolute deviation
+	Continuous data, often more robust
+Sensitivity (recall)
+	If you want few missed positives
+Specificity
+	If you want few negatives called positives
+Accuracy
+	Weights false positives/negatives equally
+Concordance
+	One example is kappa
+Predictive value of a positive (precision)
+	When you are screeing and prevelance is low
 nsv<-nearZeroVar(pml_train1,saveMetrics=TRUE)
 pml_train<-pml_train1[,!nsv$zeroVar]
 pml_train<-pml_train1[,!nsv$nzv]
