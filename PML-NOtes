@@ -1,0 +1,96 @@
+
+myTraining <- fread(file_name_train, na.strings = c("NA","#DIV/0!",""));
+myTraining <- myTraining[,colSums(is.na(myTraining)) >= 0.60 * nrows(myTraining),with=F];
+myTraining <- myTraining[,sapply(myTraining, is.numeric),with=F];
+nzv<-nearZeroVar(myTraining, saveMetrics=TRUE);
+myTraining<-myTraining[,nzv$nzv==FALSE];
+myTraining <- myTraining[complete.casesmyTraining),];
+
+
+# Even with caret, we failed to remove timestamp and window label
+indentifiers <- c("V1", "user_name","raw_timestamp_part_1", "raw_timestamp_part_2", "cvtd_timestamp","new_window","num_window")
+myTraining <- myTraining[,!colnames(myTraining) %in% indentifiers,with=F] 
+
+
+
+library(caret)
+library(randomForest)
+library(rpart)
+library(rpart.plot)
+set.seed(555)
+pml_train<-read.csv("pml-training.csv",na.strings=c("NA","#DIV/0!", ""))
+pml_test<-read.csv("pml-testing.csv",na.strings=c("NA","#DIV/0!", ""))
+# Delete columns with all missing values
+pml_train1<-pml_train[,colSums(is.na(pml_train)) == 0]
+pml_test<-pml_test[,colSums(is.na(pml_train)) == 0]
+##Removing near zero & zero Covariates
+nsv<-nearZeroVar(pml_train1,saveMetrics=TRUE)
+pml_train<-pml_train1[,!nsv$zeroVar]
+pml_train<-pml_train1[,!nsv$nzv]
+pml_test<-pml_test[,!nsv$zeroVar]
+pml_test<-pml_test[,!nsv$nzv]
+##Removing variables non significatives
+pml_train<-pml_train[,-c(1:6)]
+pml_test<-pml_test[,-c(1:6)]
+##Partition train in 2 subsets 70% training set and 30% testint set
+sub <- createDataPartition(y=pml_train$classe, p=0.7, list=FALSE)
+train_set<-pml_train[sub,]
+test_set<-pml_train[-sub,]
+
+
+
+https://cran.r-project.org/web/packages/caret/vignettes/caret.pdf
+#k-folds
+control <- trainControl(method = "cv", number = 5)
+fit_rpart <- train(classe ~ ., data = train, method = "rpart", 
+                   trControl = control)
+print(fit_rpart)
+## ...
+## No pre-processing
+## Resampling: Cross-Validated (5 fold) 
+## 
+## Summary of sample sizes: 10989, 10989, 10990, 10989, 10991 
+## 
+## Resampling results across tuning parameters:
+## 
+##   cp       Accuracy  Kappa    Accuracy SD  Kappa SD
+## ...
+
+set.seed(12345)
+mod<-rpart(classe~.,data=myTraining,method="class")
+fancyRpartPlot(mod)
+predictMod<-predict(mod,myTesting,type="class")
+cmtree<-confusionMatrix(predictMod,myTesting$classe)
+cmtree
+plot(cmtree$table,col=cmtree$byClass,main=paste("Decision Tree Confusion Matrix: Accuracy=",round(cmtree$overall['Accuracy'],4)))
+
+
+
+
+FROM FORUM
+
+I did cross-validation manually, because I didn't like what caret was doing. Having taken the Caltech and Stanford machine learning classes, I felt more comfortable just writing the code to do it manually, than spending the time getting caret to behave the way I wanted it to.
+
+The bottom line is that the only way to get a clean out-of-sample test error estimate is to get it on something that has never, ever had any part of the model selection or training.
+
+But, in order to choose the best model and/or the best parameters for the chosen model, you do need to do some error estimates that are as close to an out-of-sample estimate as possible -- that's where k-fold cross validation helps out (among lots of options).
+
+So here's an example how you could do it. You start off with a set of data with known outputs and the predictors you'd like to use to develop an algorithm to predict the outputs. First step: reserve some fraction of it (say 25%) and set it aside, stick it into a locked safe, hide the key, don't EVER even look at that data. This is going to be used at the very end, to get an estimate of your out-of-sample error rate.
+
+The remaining 75% is what you'll train on -- let's say you want to try 5 different modeling algorithms, and even after you choose the algorithm you want, you'll have to optimize parameters for that algorithm. You *don't* want to use the entire 75% all at once to test each algorithm, because then you can only estimate your error rate with your training sample (remember, you're NOT going to touch that 25% reserved data). If you were to use that 75% to train your each of your models, and then use that same 75% to look at your error rate, that's going to be an overly optimistic, in-sample training error rate.
+
+So instead, you could do k-fold cross validation, let's say 10-fold. What you do is you split your 75% data into 10 approximately equal segments, and then you permute those 10 segments into 10 sets of 90% to train with + remaining 10% to test with. So, for each model you want to try (LDA, GBM, tree, SVM, RF, whatever), you train EACH one *TEN* times (using a different permutation of your 10 folds) with a different 90% of your 75% training data, and then for EACH one, you calculate *TEN* different estimates of error using the remaining 10%. Since those 10% weren't used for training, they are a better estimate of your out-of-sample error rate, but because there's not as much of it (10% of your original 75%), each estimate of error will have a bit of variance. But that's OK, because you're going to average those *TEN* different error estimates of your *TEN* different trainings, to get an average error. Again, this is a better approximation for out-of-sample error rates (less optimistic), because it wasn't used directly for model training.
+
+So at this point, you've done 50 trainings (10 x each of 5 models) to get 5 estimated sort-of-out-of-sample error rates (the mean of the 10 trainings, for each model), and you decide you like 1 model best, because it has the lowest error rate. But now, you want to tweak its parameters -- maybe your lambda, for ridge regression, or # of variable predictors to use, to minimize overfitting, whatever. (Of course, you could have done this up above as well, but I'm just simulating an ongoing model selection process, where prior steps affect future model selection choices.)
+
+So you can use your 75% training data to do 10-fold cross validation again, on the model you chose, this time varying your lambda or whatever, to try to optimize your model parameters, again training 10 times with 90% of your 75% training data, and estimating errors with the remaining 10%, and averaging it over 10 trainings, over all the folds. The subtle problem is that you are now really starting to re-use this 75%, so it's starting to feel like you might not be getting as good an "out-of-sample" error, because you already used this data to choose your model in the first step. Too bad -- life's imperfect, and you have finite data, and you are NOT going to touch that 25% that's locked away, because that would contaminate it.
+
+You finally have chosen your desired model, and the parameters for it. You've been training it on 90% of your 75% all along (the remaining 10% were used to estimate out-of-sample errors), and now it's OK to use all 100% of the 75% to do one last training to get the best coefficients you can by maximizing the number of training samples you can (using 100% instead of 90% gets you more samples). You now have your final model.
+
+Now, FINALLY, you can unlock that safe, pull out that 25% of your original starting data that has NEVER EVER been touched to affect ANY step of model selection or training, and run your final model on THAT data set, to get your final out-of-sample estimated test error.
+
+I think at this point, it's also OK to use all 100% of your data to get a FINAL FINAL model, because more training examples ought to give you better model performance. But of course, you no longer have any way to estimate out-of-sample error, but you'll probably have a model that performs better.
+
+To my understanding, from taking two previous machine learning courses, that's the general idea of how you would do cross-validation for model selection / tuning, and still have a reserved data set to get the best possible true out-of-sample test error estimate.
+
+Hope that helps -- it certainly helped me to try to put it all down, all at once.
