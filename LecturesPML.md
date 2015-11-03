@@ -78,3 +78,23 @@ https://www.kaggle.com/
 
 Backtesting is a term used in oceanography, meteorology and the financial industry to refer to testing a predictive model using existing historic data. Backtesting is a kind of retrodiction, and a special type of cross-validation applied to time series data.
 https://en.wikipedia.org/wiki/Backtesting
+
+## Types of Errors
+- In general, Positive = identified and negative = rejected. Therefore:
+  - True positive = correctly identified
+  - False positive = incorrectly identified
+  - True negative = correctly rejected
+  - False negative = incorrectly rejected
+- Medical testing example:
+  - True positive = Sick people correctly diagnosed as sick
+  - False positive= Healthy people incorrectly identified as sick
+  - True negative = Healthy people correctly identified as healthy
+  - False negative = Sick people incorrectly identified as healthy.
+
+### Key Quantities
+![bayes](https://camo.githubusercontent.com/f3156300abccf94ee861480c58b664675d421044/687474703a2f2f64617461736369656e63657370656369616c697a6174696f6e2e6769746875622e696f2f636f75727365732f6173736574732f696d672f6b65797175616e7469746965732e706e67)
+
+http://en.wikipedia.org/wiki/Sensitivity_and_specificity
+
+### Key Quantities as Fractions
+![bayesAsFractions][https://camo.githubusercontent.com/cee0e1db1482884ad9ceb8d364fa85d7a2de8bd0/687474703a2f2f64617461736369656e63657370656369616c697a6174696f6e2e6769746875622e696f2f636f75727365732f6173736574732f696d672f6b65797175616e74667261632e706e67]
