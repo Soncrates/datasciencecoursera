@@ -113,3 +113,29 @@ http://en.wikipedia.org/wiki/Sensitivity_and_specificity
 
 ### At risk subpopulation as fraction
 ![bayesAsFractionsHighRisk](https://camo.githubusercontent.com/6269842963a050e75da9dd2f14999df624ef1fcb/687474703a2f2f64617461736369656e63657370656369616c697a6174696f6e2e6769746875622e696f2f636f75727365732f6173736574732f696d672f70726564706f73352e706e67)
+
+## For continuous data
+
+### Mean squared error (MSE):
+
+1/n(∑i=1)(for i = 1 through N)  (Prediction(sub i)−Truth(sub i))^2
+
+### Root mean squared error (RMSE):
+
+sqrt(1/n(∑i=1)(for i = 1 through N)  (Predictioni−Truthi)^2)
+
+## Common error measures
+- Mean squared error (or root mean squared error)
+  - Continuous data, sensitive to outliers
+- Median absolute deviation
+  - Continuous data, often more robust
+- Sensitivity (recall)
+  - If you want few missed positives
+- Specificity
+  - If you want few negatives called positives
+- Accuracy
+  - Weights false positives/negatives equally
+- Concordance
+  - One example is kappa
+- Predictive value of a positive (precision)
+  - When you are screeing and prevelance is low
