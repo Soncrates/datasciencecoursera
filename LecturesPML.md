@@ -98,3 +98,18 @@ http://en.wikipedia.org/wiki/Sensitivity_and_specificity
 
 ### Key Quantities as Fractions
 ![bayesAsFractions](https://camo.githubusercontent.com/cee0e1db1482884ad9ceb8d364fa85d7a2de8bd0/687474703a2f2f64617461736369656e63657370656369616c697a6174696f6e2e6769746875622e696f2f636f75727365732f6173736574732f696d672f6b65797175616e74667261632e706e67)
+
+#### Example
+- Assume that some disease has 0.1% prevalence in the population.
+- Assume we have a test kit for that disease.
+  - 99% Sensitivity
+  - 99% Specificity
+- What is the probablility of a person having the disease given a positive test result if we randomly select that person from :
+  - the general population
+  - a high risk sub-population with 10% disease prevalence?
+
+### General population as fractions
+![bayesAsFractionsGenPop](https://camo.githubusercontent.com/b32484d8d9b814e205ee45de64ce8c5479c3886b/687474703a2f2f64617461736369656e63657370656369616c697a6174696f6e2e6769746875622e696f2f636f75727365732f6173736574732f696d672f70726564706f73332e706e67)
+
+### At risk subpopulation as fraction
+![bayesAsFractionsHighRisk](https://camo.githubusercontent.com/6269842963a050e75da9dd2f14999df624ef1fcb/687474703a2f2f64617461736369656e63657370656369616c697a6174696f6e2e6769746875622e696f2f636f75727365732f6173736574732f696d672f70726564706f73352e706e67)
