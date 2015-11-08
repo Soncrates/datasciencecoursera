@@ -1,6 +1,302 @@
 # Week 1 Practical Machine Learning
 
-## Lesson 
+# Lesson (1) Prediction Motivation
+
+## About this course
+
+* This course covers the basic ideas behind machine learning/prediction
+  * Study design - training vs. test sets
+  * Conceptual issues - out of sample error, ROC curves
+  * Practical implementation - the caret package
+* What this course depends on
+  * The Data Scientist's Toolbox
+  * R Programming
+* What would be useful
+  * Exploratory analysis
+  * Reporting Data and Reproducible Research
+  * Regression models
+
+---
+
+## Who predicts?
+
+* Local governments -> pension payments
+* Google -> whether you will click on an ad
+* Amazon -> what movies you will watch
+* Insurance companies -> what your risk of death is
+* Johns Hopkins -> who will succeed in their programs
+
+---
+
+
+## Why predict? Glory!
+
+[http://www.zimbio.com/photos/Chris+Volinsky](http://www.zimbio.com/photos/Chris+Volinsky)
+
+---
+
+## Why predict? Riches!
+
+[http://www.heritagehealthprize.com/c/hhp](http://www.heritagehealthprize.com/c/hhp)
+
+---
+
+## Why predict? For sport!
+
+[http://www.kaggle.com/](http://www.kaggle.com/)
+
+---
+
+## Why predict? To save lives!
+
+[http://www.oncotypedx.com/en-US/Home](http://www.oncotypedx.com/en-US/Home)
+
+---
+
+## A useful (if a bit advanced) book
+
+[The elements of statistical learning](http://statweb.stanford.edu/~tibs/ElemStatLearn/)
+
+---
+
+## A useful package
+
+[http://caret.r-forge.r-project.org/](http://caret.r-forge.r-project.org/)
+
+---
+
+## Machine learning (more advanced material)
+
+[https://www.coursera.org/course/ml](https://www.coursera.org/course/ml)
+
+
+---
+
+## Even more resources
+
+* [List of machine learning resources on Quora](http://www.quora.com/Machine-Learning/What-are-some-good-resources-for-learning-about-machine-learning-Why)
+* [List of machine learning resources from Science](http://www.sciencemag.org/site/feature/data/compsci/machine_learning.xhtml)
+* [Advanced notes from MIT open courseware](http://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-867-machine-learning-fall-2006/lecture-notes/)
+* [Advanced notes from CMU](http://www.stat.cmu.edu/~cshalizi/350/)
+* [Kaggle - machine learning competitions](http://www.kaggle.com/)
+
+## Lesson (2) What is Prediction ?
+
+
+## The central dogma of prediction
+
+<img class="center" src=../../assets/img/08_PredictionAndMachineLearning/centraldogma.png height=450>
+
+---
+
+## What can go wrong
+
+<img class="center" src=../../assets/img/08_PredictionAndMachineLearning/googleflu.png height=450>
+
+
+http://www.sciencemag.org/content/343/6176/1203.full.pdf
+
+---
+
+## Components of a predictor
+
+</br>
+
+<center> question -> input data -> features -> algorithm -> parameters -> evaluation  </center>
+
+
+---
+
+## SPAM Example
+
+</br>
+
+<center> <redtext>question</redtext> -> input data -> features -> algorithm -> parameters -> evaluation  </center>
+
+</br>
+
+__Start with a general question__
+
+Can I automatically detect emails that are SPAM that are not?
+
+__Make it concrete__
+
+Can I use quantitative characteristics of the emails to classify them as SPAM/HAM?
+
+
+---
+
+## SPAM Example
+
+</br>
+
+<center> question -> <redtext>input data </redtext> -> features -> algorithm -> parameters -> evaluation  </center>
+
+<img class=center src=../../assets/img/spamR.png height='400' />
+
+[http://rss.acs.unt.edu/Rdoc/library/kernlab/html/spam.html](http://rss.acs.unt.edu/Rdoc/library/kernlab/html/spam.html)
+
+
+
+---
+
+## SPAM Example
+
+</br>
+
+<center> question -> input data  -> <redtext>features</redtext> -> algorithm -> parameters -> evaluation  </center>
+
+</br>
+
+
+
+<b>
+Dear Jeff, 
+
+Can you send me your address so I can send you the invitation? 
+
+Thanks,
+
+Ben
+</b>
+
+
+
+
+---
+
+## SPAM Example
+
+</br>
+
+<center> question -> input data  -> <redtext>features</redtext> -> algorithm -> parameters -> evaluation  </center>
+
+</br>
+
+<b> 
+
+Dear Jeff, 
+
+Can <rt>you</rt> send me your address so I can send <rt>you</rt> the invitation? 
+
+Thanks,
+
+Ben
+</b>
+
+</br>
+
+Frequency of you $= 2/17 = 0.118$
+
+---
+
+## SPAM Example
+
+</br>
+
+<center> question -> input data  -> <redtext>features</redtext> -> algorithm -> parameters -> evaluation  </center>
+
+
+```{r loadData}
+library(kernlab)
+data(spam)
+head(spam)
+
+```
+
+
+---
+
+## SPAM Example
+
+
+<center> question -> input data  -> features -> <redtext>algorithm</redtext> -> parameters -> evaluation  </center>
+
+```{r,dependson="loadData",fig.height=3.5,fig.width=3.5}
+plot(density(spam$your[spam$type=="nonspam"]),
+     col="blue",main="",xlab="Frequency of 'your'")
+lines(density(spam$your[spam$type=="spam"]),col="red")
+```
+
+---
+
+## SPAM Example
+
+
+<center> question -> input data  -> features -> <redtext>algorithm</redtext> -> parameters -> evaluation  </center>
+
+</br></br>
+
+__Our algorithm__
+
+* Find a value $C$. 
+* __frequency of 'your' $>$ C__ predict "spam"
+
+---
+
+## SPAM Example
+
+
+<center> question -> input data  -> features -> algorithm -> <redtext>parameters</redtext> -> evaluation  </center>
+
+```{r,dependson="loadData",fig.height=3.5,fig.width=3.5}
+plot(density(spam$your[spam$type=="nonspam"]),
+     col="blue",main="",xlab="Frequency of 'your'")
+lines(density(spam$your[spam$type=="spam"]),col="red")
+abline(v=0.5,col="black")
+```
+
+---
+
+## SPAM Example
+
+
+<center> question -> input data  -> features -> algorithm -> parameters -> <redtext>evaluation</redtext></center>
+
+```{r,dependson="loadData",fig.height=3.5,fig.width=3.5}
+prediction <- ifelse(spam$your > 0.5,"spam","nonspam")
+table(prediction,spam$type)/length(spam$type)
+```
+
+Accuracy$ \approx 0.459 + 0.292 = 0.751$
+
+# Lesson (3) Relative Importance
+
+
+## Relative order of importance
+
+</br>
+</br>
+</br>
+
+<center> question > data > features > algorithms </center>
+
+
+---
+
+## An important point
+
+<q>The combination of some data and an aching desire for an answer does not ensure that a reasonable answer can be extracted from a given body of data.</q>
+
+<center> John Tukey </center>
+
+
+
+
+---
+
+## Garbage in = Garbage out
+
+<center> question -> <rt>input data</rt> -> features -> algorithm -> parameters -> evaluation  </center>
+
+1. May be easy (movie ratings -> new movie ratings)
+2. May be harder (gene expression data -> disease)
+3. Depends on what is a "good prediction".
+4. Often [more data > better models](http://www.youtube.com/watch?v=yvDCzhbjYWs)
+5. The most important step!
+
+
+---
 
 ## Features matter!
 
@@ -18,34 +314,65 @@ __Common mistakes__
 * Not paying attention to data-specific quirks
 * Throwing away information unnecessarily
 
+---
+
 ## May be automated with care
 
 <center> question -> input data -> <rt>features</rt> -> algorithm -> parameters -> evaluation  </center>
 
+<img class=center src=../../assets/img/08_PredictionAndMachineLearning/autofeatures.jpeg height=300>
+
 [http://arxiv.org/pdf/1112.6209v5.pdf](http://arxiv.org/pdf/1112.6209v5.pdf)
+
+---
 
 ## Algorithms matter less than you'd think
 
 <center> question -> input data -> features -> <rt>algorithm</rt> -> parameters -> evaluation  </center>
 
+<img class=center src=../../assets/img/08_PredictionAndMachineLearning/illusiontable.png height=400>
+
 [http://arxiv.org/pdf/math/0606441.pdf](http://arxiv.org/pdf/math/0606441.pdf)
+
+---
 
 ## Issues to consider
 
+<img class=center src=../../assets/img/08_PredictionAndMachineLearning/mlconsiderations.jpg height=400>
+
 [http://strata.oreilly.com/2013/09/gaining-access-to-the-best-machine-learning-methods.html](http://strata.oreilly.com/2013/09/gaining-access-to-the-best-machine-learning-methods.html)
 
+---
+
 ## Prediction is about accuracy tradeoffs
+
 
 * Interpretability versus accuracy
 * Speed versus accuracy
 * Simplicity versus accuracy
 * Scalability versus accuracy
 
+---
+
 ## Interpretability matters
+
+<img class=center src=../../assets/img/08_PredictionAndMachineLearning/interpretable.png height=150>
+
+</br></br></br>
 
 [http://www.cs.cornell.edu/~chenhao/pub/mldg-0815.pdf](http://www.cs.cornell.edu/~chenhao/pub/mldg-0815.pdf)
 
+---
+
 ## Scalability matters
+
+<img class=center src=../../assets/img/08_PredictionAndMachineLearning/netflixno.png height=250>
+</br></br></br>
+
+[http://www.techdirt.com/blog/innovation/articles/20120409/03412518422/](http://www.techdirt.com/blog/innovation/articles/20120409/03412518422/)
+
+[http://techblog.netflix.com/2012/04/netflix-recommendations-beyond-5-stars.html](http://techblog.netflix.com/2012/04/netflix-recommendations-beyond-5-stars.html)
+
 
 # Lesson Out of Sample Error (4)
 
@@ -81,7 +408,7 @@ __Key ideas__
 
 [http://en.wikipedia.org/wiki/Overfitting](http://en.wikipedia.org/wiki/Overfitting)
 
-# Lesson : Prediction study design (5)
+# Lesson (5) Prediction study design 
 
 ## Prediction study design
 
@@ -145,7 +472,7 @@ __Key ideas__
   * Random assignment does this
   * You can also try to balance by features - but this is tricky
 
-# Lesson: Types of Errors (6)
+# Lesson (6) Types of Errors 
 ## Basic terms
 
 In general, __Positive__ = identified and __negative__ = rejected. Therefore:
@@ -246,7 +573,7 @@ $$\sqrt{\frac{1}{n} \sum_{i=1}^n(Prediction_i - Truth_i)^2}$$
 7. Predictive value of a positive (precision)
   * When you are screeing and prevelance is low
 
-# Lesson : Receiver Operating Characteristic (7)
+# Lesson (7) Receiver Operating Characteristic
 
 ## Why a curve?
   
@@ -286,7 +613,7 @@ $$\sqrt{\frac{1}{n} \sum_{i=1}^n(Prediction_i - Truth_i)^2}$$
   
   [http://en.wikipedia.org/wiki/Receiver_operating_characteristic](http://en.wikipedia.org/wiki/Receiver_operating_characteristic)
   
-  # Lesson : Cross Validation (8)
+  # Lesson (8) Cross Validation
 
 ## Study design
 
@@ -343,7 +670,7 @@ _Used for_:
   * Can be corrected, but it is complicated ([0.632 Bootstrap](http://www.jstor.org/discover/10.2307/2965703?uid=2&uid=4&sid=21103054448997))
 * If you cross-validate to pick predictors estimate you must estimate errors on independent data. 
 
-# Lesson : What Data (9)
+# Lesson (9) What Data 
 
 ## A succcessful predictor
 
@@ -407,7 +734,7 @@ _Used for_:
 
 [http://www.nejm.org/doi/full/10.1056/NEJMon1211064](http://www.nejm.org/doi/full/10.1056/NEJMon1211064)
 
-# Lesson Caret Package (10)
+# Lesson (10) Caret Package 
 
 ## The caret R package
 
@@ -507,7 +834,7 @@ confusionMatrix(predictions,testing$type)
   * [http://www.jstatsoft.org/v28/i05/paper](http://www.jstatsoft.org/v28/i05/paper)
   * 
   
-# Lesson Data Slicing (11)
+# Lesson (11) Data Slicing 
 
 ## SPAM Example: Data splitting
 
@@ -581,7 +908,7 @@ folds$test[[1]]
   * [http://www.jstatsoft.org/v28/i05/paper](http://www.jstatsoft.org/v28/i05/paper)
   * 
   
-# Lesson Training Options (12)
+# Lesson (12) Training Options 
 
 
 ## SPAM Example
@@ -671,7 +998,7 @@ modelFit3
 * [Caret tutorial](http://www.edii.uclm.es/~useR-2013/Tutorials/kuhn/user_caret_2up.pdf)
 * [Model training and tuning](http://caret.r-forge.r-project.org/training.html)
 
-# Lesson PlottingPredictors
+# Lesson (13) PlottingPredictors
 
 ## Example: predicting wages
 
@@ -799,7 +1126,7 @@ qplot(wage,colour=education,data=training,geom="density")
 * [ggplot2 tutorial](http://rstudio-pubs-static.s3.amazonaws.com/2176_75884214fc524dc0bc2a140573da38bb.html)
 * [caret visualizations](http://caret.r-forge.r-project.org/visualizations.html)
 
-# Lesson Basic Preprocessing (14)
+# Lesson (14) Basic Preprocessing 
 
 ## Why preprocess?
 
@@ -931,7 +1258,7 @@ quantile((capAve - capAveTruth)[!selectNA])
 * Careful when transforming factor variables!
 * [preprocessing with caret](http://caret.r-forge.r-project.org/preprocess.html)
 
-#  Lesson Covariate Creation (15)
+#  Lesson (15) Covariate Creation 
 
 
 ## Two levels of covariate creation
@@ -1063,7 +1390,7 @@ predict(bsBasis,age=testing$age)
 * If you want to fit spline models, use the _gam_ method in the _caret_ package which allows smoothing of multiple variables.
 * More on feature creation/data tidying in the Obtaining Data course from the Data Science course track. 
 
-# Lesson Preprocessing PCA
+# Lesson (16) Preprocessing PCA
 
 
 ## Correlated predictors
@@ -1226,7 +1553,7 @@ confusionMatrix(testing$type,predict(modelFit,testing))
   * Exploratory Data Analysis
   * [Elements of Statistical Learning](http://statweb.stanford.edu/~tibs/ElemStatLearn/)
   
-# Lesson Predicting with Regression (17)
+# Lesson (17) Predicting with Regression 
 
 
 ## Key ideas
@@ -1359,7 +1686,7 @@ summary(modFit$finalModel)
 * [Modern applied statistics with S](http://www.amazon.com/Modern-Applied-Statistics-W-N-Venables/dp/0387954570)
 * [Introduction to statistical learning](http://www-bcf.usc.edu/~gareth/ISL/)
 
-# LEsson Predicting with Regression (18)
+# Lesson (18) Predicting with Regression 
 
 
 ## Example: predicting wages
@@ -1508,7 +1835,7 @@ qplot(wage,pred,data=testing)
 * [Introduction to statistical learning](http://www-bcf.usc.edu/~gareth/ISL/)
 * 
 
-# LEsson Predicting with Trees (19)
+# Lesson (19) Predicting with Trees 
 
 
 ## Key ideas
@@ -1694,7 +2021,7 @@ in R both in the caret package - [party](http://cran.r-project.org/web/packages/
 * [Classification and regression trees](http://www.amazon.com/Classification-Regression-Trees-Leo-Breiman/dp/0412048418)
 
 
-# LEsson Bagging (20)
+# Lesson (20) Bagging 
 
 
 ## Bootstrap aggregating (bagging)
@@ -1827,7 +2154,7 @@ __Further resources__:
 * [Bagging and boosting](http://stat.ethz.ch/education/semesters/FS_2008/CompStat/sk-ch8.pdf)
 * [Elements of Statistical Learning](http://www-stat.stanford.edu/~tibs/ElemStatLearn/)
 
-# Lesson Random Forest (21)
+# Lesson (21) Random Forest 
 
 
 ## Random forests
@@ -1933,7 +2260,7 @@ __Further resources__:
 * [Random forest Wikipedia](http://en.wikipedia.org/wiki/Random_forest)
 * [Elements of Statistical Learning](http://www-stat.stanford.edu/~tibs/ElemStatLearn/)
 
-# LEsson Boosting (22)
+# Lesson (22) Boosting 
 
 
 ## Basic idea
@@ -2052,7 +2379,7 @@ qplot(predict(modFit,testing),wage,data=testing)
   * [https://kaggle2.blob.core.windows.net/wiki-files/327/09ccf652-8c1c-4a3d-b979-ce2369c985e4/Willem%20Mestrom%20-%20Milestone%201%20Description%20V2%202.pdf](https://kaggle2.blob.core.windows.net/wiki-files/327/09ccf652-8c1c-4a3d-b979-ce2369c985e4/Willem%20Mestrom%20-%20Milestone%201%20Description%20V2%202.pdf)
   
 
-# Lesson Model Based Prediction (23)
+# Lesson (23) Model Based Prediction 
 
 
 ## Basic idea
@@ -2208,7 +2535,7 @@ qplot(Petal.Width,Sepal.Width,colour=equalPredictions,data=testing)
 * [Linear Discriminant Analysis](http://en.wikipedia.org/wiki/Linear_discriminant_analysis)
 * [Quadratic Discriminant Analysis](http://en.wikipedia.org/wiki/Quadratic_classifier)
 
-# Lesson Regularized  Regression
+# Lesson (24) Regularized  Regression
 
 
 
@@ -2426,7 +2753,7 @@ http://www.cbcb.umd.edu/~hcorrada/PracticalML/
   * `lasso`
   * `relaxo`
 
-# Lesson Combining Predictors (25)
+# Lesson (25) Combining Predictors 
 
 
 ## Key ideas
@@ -2607,7 +2934,7 @@ sqrt(sum((combPredV-validation$wage)^2))
 
 [http://techblog.netflix.com/2012/04/netflix-recommendations-beyond-5-stars.html](http://techblog.netflix.com/2012/04/netflix-recommendations-beyond-5-stars.html)
 
-# Lesson Unsupervised Redictions (26)
+# Lesson (26) Unsupervised Redictions  
 
 
 ## Key ideas
@@ -2685,7 +3012,7 @@ table(testClusterPred ,testing$Species)
 * [Elements of statistical learning](http://www-stat.stanford.edu/~tibs/ElemStatLearn/)
 * [Introduction to statistical learning](http://www-bcf.usc.edu/~gareth/ISL/)
 
-# LEsson Forecasting (27)
+# Lesson (27) Forecasting 
 
 
 ## Time series data
