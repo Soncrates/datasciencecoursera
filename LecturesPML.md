@@ -28,7 +28,6 @@
 
 ---
 
-
 ## Why predict? Glory!
 
 [http://www.zimbio.com/photos/Chris+Volinsky](http://www.zimbio.com/photos/Chris+Volinsky)
@@ -69,7 +68,6 @@
 
 [https://www.coursera.org/course/ml](https://www.coursera.org/course/ml)
 
-
 ---
 
 ## Even more resources
@@ -85,14 +83,9 @@
 
 ## The central dogma of prediction
 
-<img class="center" src=../../assets/img/08_PredictionAndMachineLearning/centraldogma.png height=450>
-
 ---
 
 ## What can go wrong
-
-<img class="center" src=../../assets/img/08_PredictionAndMachineLearning/googleflu.png height=450>
-
 
 http://www.sciencemag.org/content/343/6176/1203.full.pdf
 
@@ -103,7 +96,6 @@ http://www.sciencemag.org/content/343/6176/1203.full.pdf
 </br>
 
 <center> question -> input data -> features -> algorithm -> parameters -> evaluation  </center>
-
 
 ---
 
@@ -123,7 +115,6 @@ __Make it concrete__
 
 Can I use quantitative characteristics of the emails to classify them as SPAM/HAM?
 
-
 ---
 
 ## SPAM Example
@@ -132,11 +123,7 @@ Can I use quantitative characteristics of the emails to classify them as SPAM/HA
 
 <center> question -> <redtext>input data </redtext> -> features -> algorithm -> parameters -> evaluation  </center>
 
-<img class=center src=../../assets/img/spamR.png height='400' />
-
 [http://rss.acs.unt.edu/Rdoc/library/kernlab/html/spam.html](http://rss.acs.unt.edu/Rdoc/library/kernlab/html/spam.html)
-
-
 
 ---
 
@@ -149,7 +136,6 @@ Can I use quantitative characteristics of the emails to classify them as SPAM/HA
 </br>
 
 
-
 <b>
 Dear Jeff, 
 
@@ -159,9 +145,6 @@ Thanks,
 
 Ben
 </b>
-
-
-
 
 ---
 
@@ -195,7 +178,6 @@ Frequency of you $= 2/17 = 0.118$
 </br>
 
 <center> question -> input data  -> <redtext>features</redtext> -> algorithm -> parameters -> evaluation  </center>
-
 
 ```{r loadData}
 library(kernlab)
@@ -236,7 +218,6 @@ __Our algorithm__
 
 ## SPAM Example
 
-
 <center> question -> input data  -> features -> algorithm -> <redtext>parameters</redtext> -> evaluation  </center>
 
 ```{r,dependson="loadData",fig.height=3.5,fig.width=3.5}
@@ -271,7 +252,6 @@ Accuracy$ \approx 0.459 + 0.292 = 0.751$
 
 <center> question > data > features > algorithms </center>
 
-
 ---
 
 ## An important point
@@ -279,9 +259,6 @@ Accuracy$ \approx 0.459 + 0.292 = 0.751$
 <q>The combination of some data and an aching desire for an answer does not ensure that a reasonable answer can be extracted from a given body of data.</q>
 
 <center> John Tukey </center>
-
-
-
 
 ---
 
@@ -320,8 +297,6 @@ __Common mistakes__
 
 <center> question -> input data -> <rt>features</rt> -> algorithm -> parameters -> evaluation  </center>
 
-<img class=center src=../../assets/img/08_PredictionAndMachineLearning/autofeatures.jpeg height=300>
-
 [http://arxiv.org/pdf/1112.6209v5.pdf](http://arxiv.org/pdf/1112.6209v5.pdf)
 
 ---
@@ -330,22 +305,17 @@ __Common mistakes__
 
 <center> question -> input data -> features -> <rt>algorithm</rt> -> parameters -> evaluation  </center>
 
-<img class=center src=../../assets/img/08_PredictionAndMachineLearning/illusiontable.png height=400>
-
 [http://arxiv.org/pdf/math/0606441.pdf](http://arxiv.org/pdf/math/0606441.pdf)
 
 ---
 
 ## Issues to consider
 
-<img class=center src=../../assets/img/08_PredictionAndMachineLearning/mlconsiderations.jpg height=400>
-
 [http://strata.oreilly.com/2013/09/gaining-access-to-the-best-machine-learning-methods.html](http://strata.oreilly.com/2013/09/gaining-access-to-the-best-machine-learning-methods.html)
 
 ---
 
 ## Prediction is about accuracy tradeoffs
-
 
 * Interpretability versus accuracy
 * Speed versus accuracy
@@ -356,8 +326,6 @@ __Common mistakes__
 
 ## Interpretability matters
 
-<img class=center src=../../assets/img/08_PredictionAndMachineLearning/interpretable.png height=150>
-
 </br></br></br>
 
 [http://www.cs.cornell.edu/~chenhao/pub/mldg-0815.pdf](http://www.cs.cornell.edu/~chenhao/pub/mldg-0815.pdf)
@@ -366,13 +334,11 @@ __Common mistakes__
 
 ## Scalability matters
 
-<img class=center src=../../assets/img/08_PredictionAndMachineLearning/netflixno.png height=250>
 </br></br></br>
 
 [http://www.techdirt.com/blog/innovation/articles/20120409/03412518422/](http://www.techdirt.com/blog/innovation/articles/20120409/03412518422/)
 
 [http://techblog.netflix.com/2012/04/netflix-recommendations-beyond-5-stars.html](http://techblog.netflix.com/2012/04/netflix-recommendations-beyond-5-stars.html)
-
 
 # Lesson Out of Sample Error (4)
 
@@ -476,15 +442,16 @@ __Key ideas__
 ## Basic terms
 
 In general, __Positive__ = identified and __negative__ = rejected. Therefore:
-__True positive__ = correctly identified
-__False positive__ = incorrectly identified
-__True negative__ = correctly rejected
-__False negative__ = incorrectly rejected
+* __True positive__ = correctly identified
+* __False positive__ = incorrectly identified
+* __True negative__ = correctly rejected
+* __False negative__ = incorrectly rejected
+
 _Medical testing example_:
-__True positive__ = Sick people correctly diagnosed as sick
-__False positive__= Healthy people incorrectly identified as sick
-__True negative__ = Healthy people correctly identified as healthy
-__False negative__ = Sick people incorrectly identified as healthy.
+* __True positive__ = Sick people correctly diagnosed as sick
+* __False positive__= Healthy people incorrectly identified as sick
+* __True negative__ = Healthy people correctly identified as healthy
+* __False negative__ = Sick people incorrectly identified as healthy.
 
 [http://en.wikipedia.org/wiki/Sensitivity_and_specificity](http://en.wikipedia.org/wiki/Sensitivity_and_specificity)
 
