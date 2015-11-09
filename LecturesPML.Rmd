@@ -637,7 +637,7 @@ _Used for_:
   * Can be corrected, but it is complicated ([0.632 Bootstrap](http://www.jstor.org/discover/10.2307/2965703?uid=2&uid=4&sid=21103054448997))
 * If you cross-validate to pick predictors estimate you must estimate errors on independent data. 
 
-# Lesson (9) What Data 
+# Lesson (9) What Data Should you use?
 
 ## A succcessful predictor
 
@@ -701,6 +701,7 @@ _Used for_:
 
 [http://www.nejm.org/doi/full/10.1056/NEJMon1211064](http://www.nejm.org/doi/full/10.1056/NEJMon1211064)
 
+# Week 2
 # Lesson (10) Caret Package 
 
 ## The caret R package
@@ -965,7 +966,7 @@ modelFit3
 * [Caret tutorial](http://www.edii.uclm.es/~useR-2013/Tutorials/kuhn/user_caret_2up.pdf)
 * [Model training and tuning](http://caret.r-forge.r-project.org/training.html)
 
-# Lesson (13) PlottingPredictors
+# Lesson (13) Plotting Predictors
 
 ## Example: predicting wages
 
@@ -1357,7 +1358,7 @@ predict(bsBasis,age=testing$age)
 * If you want to fit spline models, use the _gam_ method in the _caret_ package which allows smoothing of multiple variables.
 * More on feature creation/data tidying in the Obtaining Data course from the Data Science course track. 
 
-# Lesson (16) Preprocessing PCA
+# Lesson (16) Preprocessing with Principle Component Analysis
 
 
 ## Correlated predictors
@@ -1653,7 +1654,7 @@ summary(modFit$finalModel)
 * [Modern applied statistics with S](http://www.amazon.com/Modern-Applied-Statistics-W-N-Venables/dp/0387954570)
 * [Introduction to statistical learning](http://www-bcf.usc.edu/~gareth/ISL/)
 
-# Lesson (18) Predicting with Regression 
+# Lesson (18) Predicting with Regression Multiple Covariates
 
 
 ## Example: predicting wages
@@ -1802,6 +1803,7 @@ qplot(wage,pred,data=testing)
 * [Introduction to statistical learning](http://www-bcf.usc.edu/~gareth/ISL/)
 * 
 
+# Week 3
 # Lesson (19) Predicting with Trees 
 
 
@@ -2502,9 +2504,8 @@ qplot(Petal.Width,Sepal.Width,colour=equalPredictions,data=testing)
 * [Linear Discriminant Analysis](http://en.wikipedia.org/wiki/Linear_discriminant_analysis)
 * [Quadratic Discriminant Analysis](http://en.wikipedia.org/wiki/Quadratic_classifier)
 
+# Week 4
 # Lesson (24) Regularized  Regression
-
-
 
 ## Basic idea
 
@@ -2520,8 +2521,6 @@ __Cons:__
 
 * May be computationally demanding on large data sets
 * Does not perform as well as random forests and boosting
-
-
 
 ---
 
