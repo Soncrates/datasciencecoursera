@@ -1,0 +1,2608 @@
+# Lesson (1)
+
+
+## A famous motivating example
+
+<img class=center src=fig/galton.jpg height=150>
+
+### (Perhaps surprisingly, this example is still relevant)
+
+<img class=center src=fig/height.png height=150>
+
+[http://www.nature.com/ejhg/journal/v17/n8/full/ejhg20095a.html](http://www.nature.com/ejhg/journal/v17/n8/full/ejhg20095a.html)
+
+[Predicting height: the Victorian approach beats modern genomics](http://www.wired.com/wiredscience/2009/03/predicting-height-the-victorian-approach-beats-modern-genomics/)
+
+---
+## Recent simply statistics post
+(Simply Statistics is a blog by Jeff Leek, Roger Peng and 
+Rafael Irizarry, who wrote this post, link on the image)
+
+<a href="http://simplystatistics.org/2013/01/28/data-supports-claim-that-if-kobe-stops-ball-hogging-the-lakers-will-win-more/">
+<img class=center src=http://simplystatistics.org/wp-content/uploads/2013/01/kobelakers1-1024x1024.png height=250></img>
+</a>
+
+- "Data supports claim that if Kobe stops ball hogging the Lakers will win more"
+- "Linear regression suggests that an increase of 1% in % of shots taken by Kobe results in a drop of 1.16 points (+/- 0.22)  in score differential."
+- How was it done? Do you agree with the analysis? 
+
+
+
+
+
+
+---
+## Questions for this class
+* Consider trying to answer the following kinds of questions:
+  * To use the parents' heights to predict childrens' heights.
+  * To try to find a parsimonious, easily described mean 
+    relationship between parent and children's heights.
+  * To investigate the variation in childrens' heights that appears 
+  unrelated to parents' heights (residual variation).
+  * To quantify what impact genotype information has beyond parental height in explaining child height.
+  * To figure out how/whether and what assumptions are needed to
+    generalize findings beyond the data in question.  
+  * Why do children of very tall parents tend to be 
+    tall, but a little shorter than their parents and why children of very short parents tend to be short, but a little taller than their parents? (This is a famous question called 'Regression to the mean'.)
+
+---
+## Galton's Data
+
+* Let's look at the data first, used by Francis Galton in 1885. 
+* Galton was a statistician who invented the term and concepts
+  of regression and correlation, founded the journal Biometrika,
+  and was the cousin of Charles Darwin.
+* You may need to run `install.packages("UsingR")` if the `UsingR` library is not installed.
+* Let's look at the marginal (parents disregarding children and children disregarding parents) distributions first. 
+  * Parent distribution is all heterosexual couples.
+  * Correction for gender via multiplying female heights by 1.08.
+  * Overplotting is an issue from discretization.
+
+---
+```{r galton,fig.height=3.5,fig.width=8}
+library(UsingR); data(galton); library(reshape); long <- melt(galton)
+g <- ggplot(long, aes(x = value, fill = variable)) 
+g <- g + geom_histogram(colour = "black", binwidth=1) 
+g <- g + facet_grid(. ~ variable)
+g
+```
+
+---
+## Finding the middle via least squares
+* Consider only the children's heights. 
+  * How could one describe the "middle"?
+  * One definition, let $Y_i$ be the height of child $i$ for $i = 1, \ldots, n = 928$, then define the middle as the value of $\mu$
+  that minimizes $$\sum_{i=1}^n (Y_i - \mu)^2$$
+* This is physical center of mass of the histrogram.
+* You might have guessed that the answer $\mu = \bar Y$.
+
+
+---
+## Experiment
+### Use R studio's manipulate to see what value of $\mu$ minimizes the sum of the squared deviations.
+
+```
+library(manipulate)
+myHist <- function(mu){
+    mse <- mean((galton$child - mu)^2)
+    g <- ggplot(galton, aes(x = child)) + geom_histogram(fill = "salmon", colour = "black", binwidth=1)
+    g <- g + geom_vline(xintercept = mu, size = 3)
+    g <- g + ggtitle(paste("mu = ", mu, ", MSE = ", round(mse, 2), sep = ""))
+    g
+}
+manipulate(myHist(mu), mu = slider(62, 74, step = 0.5))
+```
+
+---
+## The least squares est. is the empirical mean
+```{r , fig.height=4, fig.width=4, fig.align='center'}
+g <- ggplot(galton, aes(x = child)) + geom_histogram(fill = "salmon", colour = "black", binwidth=1)
+g <- g + geom_vline(xintercept = mean(galton$child), size = 3)
+g
+```
+
+---
+### The math (not required for the class) follows as:
+$$ 
+\begin{align} 
+\sum_{i=1}^n \left(Y_i - \mu\right)^2 & = \
+\sum_{i=1}^n \left(Y_i - \bar Y + \bar Y - \mu\right)^2 \\ 
+& = \sum_{i=1}^n \left(Y_i - \bar Y\right)^2 + \
+2 \sum_{i=1}^n \left(Y_i - \bar Y\right)  \left(\bar Y - \mu\right) +\
+\sum_{i=1}^n \left(\bar Y - \mu\right)^2 \\
+& = \sum_{i=1}^n \left(Y_i - \bar Y\right)^2 + \
+2 \left(\bar Y - \mu\right) \sum_{i=1}^n \left(Y_i - \bar Y\right) +\
+\sum_{i=1}^n \left(\bar Y - \mu\right)^2 \\
+& = \sum_{i=1}^n \left(Y_i - \bar Y\right)^2 + \
+2 \left(\bar Y - \mu\right)  \left(\left(\sum_{i=1}^n Y_i\right) -\
+ n \bar Y\right) +\
+\sum_{i=1}^n \left(\bar Y - \mu\right)^2 \\
+& = \sum_{i=1}^n \left(Y_i - \bar Y\right)^2 + \
+ \sum_{i=1}^n \left(\bar Y - \mu\right)^2\\ 
+& \geq \sum_{i=1}^n \left(Y_i - \bar Y\right)^2 \
+\end{align} 
+$$
+
+---
+## Comparing childrens' heights and their parents' heights
+
+```{r, dependson="galton",fig.height=4,fig.width=4, fig.align='center'}
+ggplot(galton, aes(x = parent, y = child)) + geom_point()
+```
+
+---
+Size of point represents number of points at that (X, Y) combination (See the Rmd file for the code).
+
+```{r freqGalton, dependson="galton",fig.height=6,fig.width=7,echo=FALSE}
+library(dplyr)
+freqData <- as.data.frame(table(galton$child, galton$parent))
+names(freqData) <- c("child", "parent", "freq")
+freqData$child <- as.numeric(as.character(freqData$child))
+freqData$parent <- as.numeric(as.character(freqData$parent))
+g <- ggplot(filter(freqData, freq > 0), aes(x = parent, y = child))
+g <- g  + scale_size(range = c(2, 20), guide = "none" )
+g <- g + geom_point(colour="grey50", aes(size = freq+20, show_guide = FALSE))
+g <- g + geom_point(aes(colour=freq, size = freq))
+g <- g + scale_colour_gradient(low = "lightblue", high="white")                    
+g
+```
+
+---
+## Regression through the origin
+* Suppose that $X_i$ are the parents' heights.
+* Consider picking the slope $\beta$ that minimizes $$\sum_{i=1}^n (Y_i - X_i \beta)^2$$
+* This is exactly using the origin as a pivot point picking the
+line that minimizes the sum of the squared vertical distances
+of the points to the line
+* Use R studio's  manipulate function to experiment
+* Subtract the means so that the origin is the mean of the parent
+and children's heights
+
+---
+```{r, echo = TRUE, eval = FALSE}
+y <- galton$child - mean(galton$child)
+x <- galton$parent - mean(galton$parent)
+freqData <- as.data.frame(table(x, y))
+names(freqData) <- c("child", "parent", "freq")
+freqData$child <- as.numeric(as.character(freqData$child))
+freqData$parent <- as.numeric(as.character(freqData$parent))
+myPlot <- function(beta){
+    g <- ggplot(filter(freqData, freq > 0), aes(x = parent, y = child))
+    g <- g  + scale_size(range = c(2, 20), guide = "none" )
+    g <- g + geom_point(colour="grey50", aes(size = freq+20, show_guide = FALSE))
+    g <- g + geom_point(aes(colour=freq, size = freq))
+    g <- g + scale_colour_gradient(low = "lightblue", high="white")                     
+    g <- g + geom_abline(intercept = 0, slope = beta, size = 3)
+    mse <- mean( (y - beta * x) ^2 )
+    g <- g + ggtitle(paste("beta = ", beta, "mse = ", round(mse, 3)))
+    g
+}
+manipulate(myPlot(beta), beta = slider(0.6, 1.2, step = 0.02))
+```
+
+---
+## The solution 
+### In the next few lectures we'll talk about why this is the solution
+```{r}
+lm(I(child - mean(child))~ I(parent - mean(parent)) - 1, data = galton)
+```
+
+---
+```{r, fig.height=6,fig.width=7,echo=FALSE}
+freqData <- as.data.frame(table(galton$child, galton$parent))
+names(freqData) <- c("child", "parent", "freq")
+freqData$child <- as.numeric(as.character(freqData$child))
+freqData$parent <- as.numeric(as.character(freqData$parent))
+g <- ggplot(filter(freqData, freq > 0), aes(x = parent, y = child))
+g <- g  + scale_size(range = c(2, 20), guide = "none" )
+g <- g + geom_point(colour="grey50", aes(size = freq+20, show_guide = FALSE))
+g <- g + geom_point(aes(colour=freq, size = freq))
+g <- g + scale_colour_gradient(low = "lightblue", high="white")                    
+lm1 <- lm(galton$child ~ galton$parent)
+g <- g + geom_abline(intercept = coef(lm1)[1], slope = coef(lm1)[2], size = 3, colour = grey(.5))
+g
+```
+
+# Lesson (2)
+
+
+## Some basic definitions
+
+* In this module, we'll cover some basic definitions and notation used throughout the class.
+* We will try to minimize the amount of mathematics required for this class.
+* No calculus is required. 
+
+---
+
+## Notation for data
+
+* We write $X_1, X_2, \ldots, X_n$ to describe $n$ data points.
+* As an example, consider the data set $\{1, 2, 5\}$ then 
+  * $X_1 = 1$, $X_2 = 2$, $X_3 = 5$ and $n = 3$.
+* We often use a different letter than $X$, such as $Y_1, \ldots , Y_n$.
+* We will typically use Greek letters for things we don't know. 
+  Such as, $\mu$ is a mean that we'd like to estimate.
+
+---
+## The empirical mean 
+
+* Define the empirical mean as
+$$
+\bar X = \frac{1}{n}\sum_{i=1}^n X_i. 
+$$
+* Notice if we subtract the mean from data points, we get data that has mean 0. That is, if we define
+$$
+\tilde X_i = X_i - \bar X.
+$$
+The mean of the $\tilde X_i$ is 0.
+* This process is called "centering" the random variables.
+* Recall from the previous lecture that the mean is 
+  the least squares solution for minimizing
+  $$
+  \sum_{i=1}^n (X_i - \mu)^2
+  $$
+
+---
+
+## The emprical standard deviation and variance
+
+* Define the empirical variance as 
+$$
+S^2 = \frac{1}{n-1} \sum_{i=1}^n (X_i - \bar X)^2 
+= \frac{1}{n-1} \left( \sum_{i=1}^n X_i^2 - n \bar X ^ 2 \right)
+$$
+* The empirical standard deviation is defined as
+$S = \sqrt{S^2}$. Notice that the standard deviation has the same units as the data.
+* The data defined by $X_i / s$ have empirical standard deviation 1. This is called "scaling" the data.
+
+---
+## Normalization
+
+* The data defined by
+$$
+Z_i = \frac{X_i - \bar X}{s}
+$$
+have empirical mean zero and empirical standard deviation 1. 
+* The process of centering then scaling the data is called "normalizing" the data. 
+* Normalized data are centered at 0 and have units equal to standard deviations of the original data. 
+* Example, a value of 2 from normalized data means that data point
+was two standard deviations larger than the mean.
+
+---
+## The empirical covariance
+* Consider now when we have pairs of data, $(X_i, Y_i)$.
+* Their empirical covariance is 
+$$
+Cov(X, Y) = 
+\frac{1}{n-1}\sum_{i=1}^n (X_i - \bar X) (Y_i - \bar Y)
+= \frac{1}{n-1}\left( \sum_{i=1}^n X_i Y_i - n \bar X \bar Y\right)
+$$
+* The correlation is defined is
+$$
+Cor(X, Y) = \frac{Cov(X, Y)}{S_x S_y}
+$$
+where $S_x$ and $S_y$ are the estimates of standard deviations 
+for the $X$ observations and $Y$ observations, respectively.
+
+---
+## Some facts about correlation
+* $Cor(X, Y) = Cor(Y, X)$
+* $-1 \leq Cor(X, Y) \leq 1$
+* $Cor(X,Y) = 1$ and $Cor(X, Y) = -1$ only when the $X$ or $Y$ observations fall perfectly on a positive or negative sloped line, respectively.
+* $Cor(X, Y)$ measures the strength of the linear relationship between the $X$ and $Y$ data, with stronger relationships as $Cor(X,Y)$ heads towards -1 or 1.
+* $Cor(X, Y) = 0$ implies no linear relationship. 
+
+# Lesson (3)
+
+
+## General least squares for linear equations
+Consider again the parent and child height data from Galton
+
+```{r, fig.height=5, fig.width=8, echo=FALSE}
+library(UsingR)
+data(galton)
+library(dplyr); library(ggplot2)
+freqData <- as.data.frame(table(galton$child, galton$parent))
+names(freqData) <- c("child", "parent", "freq")
+freqData$child <- as.numeric(as.character(freqData$child))
+freqData$parent <- as.numeric(as.character(freqData$parent))
+g <- ggplot(filter(freqData, freq > 0), aes(x = parent, y = child))
+g <- g  + scale_size(range = c(2, 20), guide = "none" )
+g <- g + geom_point(colour="grey50", aes(size = freq+20, show_guide = FALSE))
+g <- g + geom_point(aes(colour=freq, size = freq))
+g <- g + scale_colour_gradient(low = "lightblue", high="white")  
+g
+```
+
+---
+## Fitting the best line
+* Let $Y_i$ be the $i^{th}$ child's height and $X_i$ be the 
+$i^{th}$ (average over the pair of) parents' heights. 
+* Consider finding the best line 
+  * Child's Height = $\beta_0$ + Parent's Height $\beta_1$
+* Use least squares
+  $$
+  \sum_{i=1}^n \{Y_i - (\beta_0 + \beta_1 X_i)\}^2
+  $$
+
+---
+## Results
+* The least squares model fit to the line $Y = \beta_0 + \beta_1 X$ through the data pairs $(X_i, Y_i)$ with $Y_i$ as the outcome obtains the line $Y = \hat \beta_0 + \hat \beta_1 X$ where
+  $$\hat \beta_1 = Cor(Y, X) \frac{Sd(Y)}{Sd(X)} ~~~ \hat \beta_0 = \bar Y - \hat \beta_1 \bar X$$
+* $\hat \beta_1$ has the units of $Y / X$, $\hat \beta_0$ has the units of $Y$.
+* The line passes through the point $(\bar X, \bar Y$)
+* The slope of the regression line with $X$ as the outcome and $Y$ as the predictor is $Cor(Y, X) Sd(X)/ Sd(Y)$. 
+* The slope is the same one you would get if you centered the data,
+$(X_i - \bar X, Y_i - \bar Y)$, and did regression through the origin.
+* If you normalized the data, $\{ \frac{X_i - \bar X}{Sd(X)}, \frac{Y_i - \bar Y}{Sd(Y)}\}$, the slope is $Cor(Y, X)$.
+
+
+---
+## Revisiting Galton's data
+### Double check our calculations using R
+```{r, fig.height=4,fig.width=4,echo=TRUE}
+y <- galton$child
+x <- galton$parent
+beta1 <- cor(y, x) *  sd(y) / sd(x)
+beta0 <- mean(y) - beta1 * mean(x)
+rbind(c(beta0, beta1), coef(lm(y ~ x)))
+```
+
+---
+## Revisiting Galton's data
+### Reversing the outcome/predictor relationship
+```{r, fig.height=4,fig.width=4,echo=TRUE}
+beta1 <- cor(y, x) *  sd(x) / sd(y)
+beta0 <- mean(x) - beta1 * mean(y)
+rbind(c(beta0, beta1), coef(lm(x ~ y)))
+```
+
+---
+## Revisiting Galton's data
+### Regression through the origin yields an equivalent slope if you center the data first
+```{r, fig.height=4,fig.width=4,echo=TRUE}
+yc <- y - mean(y)
+xc <- x - mean(x)
+beta1 <- sum(yc * xc) / sum(xc ^ 2)
+c(beta1, coef(lm(y ~ x))[2])
+```
+
+---
+## Revisiting Galton's data
+### Normalizing variables results in the slope being the correlation
+```{r, echo=TRUE}
+yn <- (y - mean(y))/sd(y)
+xn <- (x - mean(x))/sd(x)
+c(cor(y, x), cor(yn, xn), coef(lm(yn ~ xn))[2])
+```
+
+---
+```{r, fig.height=6,fig.width=6,echo=FALSE}
+g <- ggplot(filter(freqData, freq > 0), aes(x = parent, y = child))
+g <- g  + scale_size(range = c(2, 20), guide = "none" )
+g <- g + geom_point(colour="grey50", aes(size = freq+20, show_guide = FALSE))
+g <- g + geom_point(aes(colour=freq, size = freq))
+g <- g + scale_colour_gradient(low = "lightblue", high="white")  
+g <- g + geom_smooth(method="lm", formula=y~x)
+g
+```
+
+# Lesson (4)
+
+
+## A historically famous idea, Regression to the Mean
+* Why is it that the children of tall parents tend to be tall, but not as tall as their parents? 
+* Why do children of short parents tend to be short, but not as short as their parents?
+* Why do parents of very short children, tend to be short, but not a short as their child? And the same with parents of very tall children?
+* Why do the best performing athletes this year tend to do a little worse the following?
+
+---
+## Regression to the mean
+* These phenomena are all examples of so-called regression to the mean
+* Invented by Francis Galton in the paper "Regression towards mediocrity in hereditary stature" The Journal of the Anthropological Institute of Great Britain and Ireland , Vol. 15, (1886).
+* Think of it this way, imagine if you simulated pairs of random normals
+  * The largest first ones would be the largest by chance, and the probability that there are smaller for the second simulation is high.
+  * In other words  $P(Y < x | X = x)$ gets bigger as $x$ heads into the very large values.
+  * Similarly $P(Y > x | X = x)$ gets bigger as $x$ heads to very small values.
+* Think of the regression line as the intrisic part.
+  * Unless $Cor(Y, X) = 1$ the intrinsic part isn't perfect
+
+---
+## Regression to the mean
+* Suppose that we normalize $X$ (child's height) and $Y$ (parent's height) so that they both have mean 0 and variance 1. 
+* Then, recall, our regression line passes through $(0, 0)$ (the mean of the X and Y).
+* If the slope of the regression line is $Cor(Y,X)$, regardless of which variable is the outcome (recall, both standard deviations are 1).
+* Notice if $X$ is the outcome and you create a plot where $X$ is the horizontal axis, the slope of the least squares line that you plot is $1/Cor(Y, X)$. 
+
+---
+<<<<<<< HEAD
+```{r, fig.height=6,fig.width=6,echo=FALSE}
+=======
+## Plot of the results
+```{r, fig.height=6,fig.width=6,echo=FALSE, fig.align='center'}
+>>>>>>> 3e5b14bbb8f101fc2a8573beb037d5f1b6f6fe47
+library(UsingR)
+data(father.son)
+y <- (father.son$sheight - mean(father.son$sheight)) / sd(father.son$sheight)
+x <- (father.son$fheight - mean(father.son$fheight)) / sd(father.son$fheight)
+rho <- cor(x, y)
+library(ggplot2)
+<<<<<<< HEAD
+g = ggplot(data.frame(x = x, y = y), aes(x = x, y = y))
+g = g + geom_point(size = 6, colour = "black", alpha = 0.2)
+g = g + geom_point(size = 4, colour = "salmon", alpha = 0.2)
+g = g + xlim(-4, 4) + ylim(-4, 4)
+g = g + geom_abline(intercept = 0, slope = 1)
+g = g + geom_vline(xintercept = 0)
+g = g + geom_hline(yintercept = 0)
+g = g + geom_abline(intercept = 0, slope = rho, size = 2)
+g = g + geom_abline(intercept = 0, slope = 1 / rho, size = 2)
+=======
+g = ggplot(data.frame(x, y), aes(x = x, y = y))
+g = g + geom_point(size = 5, alpha = .2, colour = "black")
+g = g + geom_point(size = 4, alpha = .2, colour = "red")
+g = g + geom_vline(xintercept = 0)
+g = g + geom_hline(yintercept = 0)
+g = g + geom_abline(position = "identity")
+g = g + geom_abline(intercept = 0, slope = rho, size = 2)
+g = g + geom_abline(intercept = 0, slope = 1 / rho, size = 2)
+g = g + xlab("Father's height, normalized")
+g = g + ylab("Son's height, normalized")
+>>>>>>> 3e5b14bbb8f101fc2a8573beb037d5f1b6f6fe47
+g
+```
+
+---
+## Discussion
+* If you had to predict a son's normalized height, it would be
+  $Cor(Y, X) * X_i$ 
+* If you had to predict a father's normalized height, it would be
+  $Cor(Y, X) * Y_i$
+* Multiplication by this correlation shrinks toward 0 (regression toward the mean)
+* If the correlation is 1 there is no regression to the mean (if father's height perfectly determine's child's height and vice versa)
+* Note, regression to the mean has been thought about quite a bit and generalized 
+
+# Lesson (5)
+
+## Basic regression model with additive Gaussian errors.
+* Least squares is an estimation tool, how do we do inference?
+* Consider developing a probabilistic model for linear regression
+$$
+Y_i = \beta_0 + \beta_1 X_i + \epsilon_{i}
+$$
+* Here the $\epsilon_{i}$ are assumed iid $N(0, \sigma^2)$. 
+* Note, $E[Y_i ~|~ X_i = x_i] = \mu_i = \beta_0 + \beta_1 x_i$
+* Note, $Var(Y_i ~|~ X_i = x_i) = \sigma^2$.
+
+
+---
+## Recap
+* Model $Y_i =  \mu_i + \epsilon_i = \beta_0 + \beta_1 X_i + \epsilon_i$ where $\epsilon_i$ are iid $N(0, \sigma^2)$
+* ML estimates of $\beta_0$ and $\beta_1$ are the least squares estimates
+  $$\hat \beta_1 = Cor(Y, X) \frac{Sd(Y)}{Sd(X)} ~~~ \hat \beta_0 = \bar Y - \hat \beta_1 \bar X$$
+* $E[Y ~|~ X = x] = \beta_0 + \beta_1 x$
+* $Var(Y ~|~ X = x) = \sigma^2$
+
+---
+## Interpretting regression coefficients, the itc
+* $\beta_0$ is the expected value of the response when the predictor is 0
+$$
+E[Y | X = 0] =  \beta_0 + \beta_1 \times 0 = \beta_0
+$$
+* Note, this isn't always of interest, for example when $X=0$ is impossible or far outside of the range of data. (X is blood pressure, or height etc.) 
+* Consider that 
+$$
+Y_i = \beta_0 + \beta_1 X_i + \epsilon_i
+= \beta_0 + a \beta_1 + \beta_1 (X_i - a) + \epsilon_i
+= \tilde \beta_0 + \beta_1 (X_i - a) + \epsilon_i
+$$
+So, shifting your $X$ values by value $a$ changes the intercept, but not the slope. 
+* Often $a$ is set to $\bar X$ so that the intercept is interpretted as the expected response at the average $X$ value.
+
+---
+## Interpretting regression coefficients, the slope
+* $\beta_1$ is the expected change in response for a 1 unit change in the predictor
+$$
+E[Y ~|~ X = x+1] - E[Y ~|~ X = x] =
+\beta_0 + \beta_1 (x + 1) - (\beta_0 + \beta_1 x ) = \beta_1
+$$
+* Consider the impact of changing the units of $X$. 
+$$
+Y_i = \beta_0 + \beta_1 X_i + \epsilon_i
+= \beta_0 + \frac{\beta_1}{a} (X_i a) + \epsilon_i
+= \beta_0 + \tilde \beta_1 (X_i a) + \epsilon_i
+$$
+* Therefore, multiplication of $X$ by a factor $a$ results in dividing the coefficient by a factor of $a$. 
+* Example: $X$ is height in $m$ and $Y$ is weight in $kg$. Then $\beta_1$ is $kg/m$. Converting $X$ to $cm$ implies multiplying $X$ by $100 cm/m$. To get $\beta_1$ in the right units, we have to divide by $100 cm /m$ to get it to have the right units. 
+$$
+X m \times \frac{100cm}{m} = (100 X) cm
+~~\mbox{and}~~
+\beta_1 \frac{kg}{m} \times\frac{1 m}{100cm} = 
+\left(\frac{\beta_1}{100}\right)\frac{kg}{cm}
+$$
+
+---
+## Using regression coeficients for prediction
+* If we would like to guess the outcome at a particular
+  value of the predictor, say $X$, the regression model guesses
+  $$
+  \hat \beta_0 + \hat \beta_1 X
+  $$
+
+
+---
+## Example
+### `diamond` data set from `UsingR` 
+Data is diamond prices (Singapore dollars) and diamond weight
+in carats (standard measure of diamond mass, 0.2 $g$). To get the data use `library(UsingR); data(diamond)`
+
+
+---
+## Plot of the data
+```{r, echo = FALSE, fig.height=5,fig.width=5}
+library(UsingR)
+data(diamond)
+library(ggplot2)
+g = ggplot(diamond, aes(x = carat, y = price))
+g = g + xlab("Mass (carats)")
+g = g + ylab("Price (SIN $)")
+g = g + geom_point(size = 7, colour = "black", alpha=0.5)
+g = g + geom_point(size = 5, colour = "blue", alpha=0.2)
+g = g + geom_smooth(method = "lm", colour = "black")
+g
+```
+
+---
+## Fitting the linear regression model
+```{r}
+fit <- lm(price ~ carat, data = diamond)
+coef(fit)
+```
+
+* We estimate an expected `r round(coef(fit)[2], 2)` (SIN) dollar increase in price for every carat increase in mass of diamond.
+* The intercept `r round(coef(fit)[1], 2)` is the expected price
+  of a 0 carat diamond.
+
+---
+## Getting a more interpretable intercept
+```{r, echo = TRUE}
+fit2 <- lm(price ~ I(carat - mean(carat)), data = diamond)
+coef(fit2)
+```
+
+Thus $`r round(coef(fit2)[1], 1)` is the expected price for 
+the average sized diamond of the data (`r mean(diamond$carat)` carats).
+
+---
+## Changing scale
+* A one carat increase in a diamond is pretty big, what about
+  changing units to 1/10th of a carat? 
+* We can just do this by just dividing the coeficient by 10.
+  * We expect  a `r round(coef(fit)[2], 2) / 10` (SIN) dollar   change in price for every 1/10th of a carat increase in mass of diamond.
+* Showing that it's the same if we rescale the Xs and refit
+```{r, echo = TRUE}
+fit3 <- lm(price ~ I(carat * 10), data = diamond)
+coef(fit3)
+```
+
+---
+## Predicting the price of a diamond
+```{r, echo = TRUE}
+newx <- c(0.16, 0.27, 0.34)
+coef(fit)[1] + coef(fit)[2] * newx
+predict(fit, newdata = data.frame(carat = newx))
+```
+
+---
+Predicted values at the observed Xs (red)
+and at the new Xs (lines)
+```{r, echo = FALSE, fig.height=5,fig.width=5}
+data(diamond)
+plot(diamond$carat, diamond$price,  
+     xlab = "Mass (carats)", 
+     ylab = "Price (SIN $)", 
+     bg = "lightblue", 
+     col = "black", cex = 1.1, pch = 21,frame = FALSE)
+abline(fit, lwd = 2)
+points(diamond$carat, predict(fit), pch = 19, col = "red")
+lines(c(0.16, 0.16, 0.12), 
+      c(200, coef(fit)[1] + coef(fit)[2] * 0.16,
+      coef(fit)[1] + coef(fit)[2] * 0.16))
+lines(c(0.27, 0.27, 0.12), 
+      c(200, coef(fit)[1] + coef(fit)[2] * 0.27,
+        coef(fit)[1] + coef(fit)[2] * 0.27))
+lines(c(0.34, 0.34, 0.12), 
+      c(200, coef(fit)[1] + coef(fit)[2] * 0.34,
+        coef(fit)[1] + coef(fit)[2] * 0.34))
+text(newx, rep(250, 3), labels = newx, pos = 2)
+```
+
+# Lesson (6)
+
+## Motivating example
+### `diamond` data set from `UsingR` 
+Data is diamond prices (Singapore dollars) and diamond weight
+in carats (standard measure of diamond mass, 0.2 $g$). To get the data use `library(UsingR); data(diamond)`
+
+---
+```{r, echo = FALSE, fig.height=6,fig.width=6}
+library(UsingR)
+data(diamond)
+library(ggplot2)
+g = ggplot(diamond, aes(x = carat, y = price))
+g = g + xlab("Mass (carats)")
+g = g + ylab("Price (SIN $)")
+g = g + geom_smooth(method = "lm", colour = "black")
+g = g + geom_point(size = 7, colour = "black", alpha=0.5)
+g = g + geom_point(size = 5, colour = "blue", alpha=0.2)
+g
+```
+---
+
+## Residuals
+* Model $Y_i = \beta_0 + \beta_1 X_i + \epsilon_i$ where $\epsilon_i \sim N(0, \sigma^2)$.
+* Observed outcome $i$ is $Y_i$ at predictor value $X_i$
+* Predicted outcome $i$ is $\hat Y_i$ at predictor valuve $X_i$ is
+  $$
+  \hat Y_i = \hat \beta_0 + \hat \beta_1 X_i
+  $$
+* Residual, the between the observed and predicted outcome
+  $$
+  e_i = Y_i - \hat Y_i
+  $$
+  * The vertical distance between the observed data point and the regression line
+* Least squares minimizes $\sum_{i=1}^n e_i^2$
+* The $e_i$ can be thought of as estimates of the $\epsilon_i$.
+
+---
+## Properties of the residuals
+* $E[e_i] = 0$.
+* If an intercept is included, $\sum_{i=1}^n e_i = 0$
+* If a regressor variable, $X_i$, is included in the model $\sum_{i=1}^n e_i X_i = 0$. 
+* Residuals are useful for investigating poor model fit.
+* Positive residuals are above the line, negative residuals are below.
+* Residuals can be thought of as the outcome ($Y$) with the
+  linear association of the predictor ($X$) removed.
+* One differentiates residual variation (variation after removing
+the predictor) from systematic variation (variation explained by the regression model).
+* Residual plots highlight poor model fit.
+
+---
+## Code
+
+```{r}
+data(diamond)
+y <- diamond$price; x <- diamond$carat; n <- length(y)
+fit <- lm(y ~ x)
+e <- resid(fit)
+yhat <- predict(fit)
+max(abs(e -(y - yhat)))
+max(abs(e - (y - coef(fit)[1] - coef(fit)[2] * x)))
+```
+
+---
+## Residuals are the signed length of the red lines
+```{r, echo = FALSE, fig.height=5, fig.width=5}
+plot(diamond$carat, diamond$price,  
+     xlab = "Mass (carats)", 
+     ylab = "Price (SIN $)", 
+     bg = "lightblue", 
+     col = "black", cex = 2, pch = 21,frame = FALSE)
+abline(fit, lwd = 2)
+for (i in 1 : n) 
+  lines(c(x[i], x[i]), c(y[i], yhat[i]), col = "red" , lwd = 2)
+```
+
+---
+## Residuals versus X
+```{r, echo = FALSE, fig.height=5, fig.width=5}
+plot(x, e,  
+     xlab = "Mass (carats)", 
+     ylab = "Residuals (SIN $)", 
+     bg = "lightblue", 
+     col = "black", cex = 2, pch = 21,frame = FALSE)
+abline(h = 0, lwd = 2)
+for (i in 1 : n) 
+  lines(c(x[i], x[i]), c(e[i], 0), col = "red" , lwd = 2)
+```
+
+---
+## Non-linear data
+```{r, echo = FALSE, fig.height=5, fig.width=5}
+x = runif(100, -3, 3); y = x + sin(x) + rnorm(100, sd = .2); 
+library(ggplot2)
+g = ggplot(data.frame(x = x, y = y), aes(x = x, y = y))
+g = g + geom_smooth(method = "lm", colour = "black")
+g = g + geom_point(size = 7, colour = "black", alpha = 0.4)
+g = g + geom_point(size = 5, colour = "red", alpha = 0.4)
+g
+```
+
+---
+## Residual plot
+```{r, echo = FALSE, fig.height=5, fig.width=5}
+g = ggplot(data.frame(x = x, y = resid(lm(y ~ x))), 
+           aes(x = x, y = y))
+g = g + geom_hline(yintercept = 0, size = 2); 
+g = g + geom_point(size = 7, colour = "black", alpha = 0.4)
+g = g + geom_point(size = 5, colour = "red", alpha = 0.4)
+g = g + xlab("X") + ylab("Residual")
+g
+```
+
+---
+## Heteroskedasticity
+```{r, echo = FALSE, fig.height=4.5, fig.width=4.5}
+x <- runif(100, 0, 6); y <- x + rnorm(100,  mean = 0, sd = .001 * x); 
+g = ggplot(data.frame(x = x, y = y), aes(x = x, y = y))
+g = g + geom_smooth(method = "lm", colour = "black")
+g = g + geom_point(size = 7, colour = "black", alpha = 0.4)
+g = g + geom_point(size = 5, colour = "red", alpha = 0.4)
+g
+```
+
+---
+## Getting rid of the blank space can be helpful
+```{r, echo = FALSE, fig.height=4.5, fig.width=4.5}
+g = ggplot(data.frame(x = x, y = resid(lm(y ~ x))), 
+           aes(x = x, y = y))
+g = g + geom_hline(yintercept = 0, size = 2); 
+g = g + geom_point(size = 7, colour = "black", alpha = 0.4)
+g = g + geom_point(size = 5, colour = "red", alpha = 0.4)
+g = g + xlab("X") + ylab("Residual")
+g
+```
+
+---
+## Diamond data residual plot
+
+```{r, echo = FALSE, fig.height=4.5, fig.width=4.5}
+diamond$e <- resid(lm(price ~ carat, data = diamond))
+g = ggplot(diamond, aes(x = carat, y = e))
+g = g + xlab("Mass (carats)")
+g = g + ylab("Residual price (SIN $)")
+g = g + geom_hline(yintercept = 0, size = 2)
+g = g + geom_point(size = 7, colour = "black", alpha=0.5)
+g = g + geom_point(size = 5, colour = "blue", alpha=0.2)
+g
+```
+
+---
+## Diamond data residual plot
+
+```{r, echo = FALSE, fig.height=4.5, fig.width=4.5}
+e = c(resid(lm(price ~ 1, data = diamond)),
+      resid(lm(price ~ carat, data = diamond)))
+fit = factor(c(rep("Itc", nrow(diamond)),
+               rep("Itc, slope", nrow(diamond))))
+g = ggplot(data.frame(e = e, fit = fit), aes(y = e, x = fit, fill = fit))
+g = g + geom_dotplot(binaxis = "y", size = 2, stackdir = "center", binwidth = 20)
+g = g + xlab("Fitting approach")
+g = g + ylab("Residual price")
+g
+```
+
+---
+## Estimating residual variation
+* Model $Y_i = \beta_0 + \beta_1 X_i + \epsilon_i$ where $\epsilon_i \sim N(0, \sigma^2)$.
+* The ML estimate of $\sigma^2$ is $\frac{1}{n}\sum_{i=1}^n e_i^2$,
+the average squared residual. 
+* Most people use
+  $$
+  \hat \sigma^2 = \frac{1}{n-2}\sum_{i=1}^n e_i^2.
+  $$
+* The $n-2$ instead of $n$ is so that $E[\hat \sigma^2] = \sigma^2$
+
+---
+## Diamond example
+```{r, echo = TRUE}
+y <- diamond$price; x <- diamond$carat; n <- length(y)
+fit <- lm(y ~ x)
+summary(fit)$sigma
+sqrt(sum(resid(fit)^2) / (n - 2))
+```
+
+---
+## Summarizing variation
+
+- The total variability in our response is the variability around an intercept
+(think mean only regression) $\sum_{i=1}^n (Y_i - \bar Y)^2$
+- The regression variability is the variability that is explained by adding the
+predictor $\sum_{i=1}^n  (\hat Y_i - \bar Y)^2$
+- The error variability is what's leftover around the regression line
+$\sum_{i=1}^n (Y_i - \hat Y_i)^2$
+- Neat fact
+$$
+\sum_{i=1}^n (Y_i - \bar Y)^2 
+= \sum_{i=1}^n (Y_i - \hat Y_i)^2 + \sum_{i=1}^n  (\hat Y_i - \bar Y)^2 
+$$
+
+---
+## R squared
+- R squared is the percentage of the total variability that is explained
+by the linear relationship with the predictor
+$$
+R^2 = \frac{\sum_{i=1}^n  (\hat Y_i - \bar Y)^2}{\sum_{i=1}^n (Y_i - \bar Y)^2}
+$$
+
+---
+## Some facts about $R^2$
+* $R^2$ is the percentage of variation explained by the regression model.
+* $0 \leq R^2 \leq 1$
+* $R^2$ is the sample correlation squared.
+* $R^2$ can be a misleading summary of model fit. 
+  * Deleting data can inflate $R^2$.
+  * (For later.) Adding terms to a regression model always increases $R^2$.
+* Do `example(anscombe)` to see the following data.
+  * Basically same mean and variance of X and Y.
+  * Identical correlations (hence same $R^2$ ).
+  * Same linear regression relationship.
+
+---
+## `data(anscombe);example(anscombe)`
+```{r, echo = FALSE, fig.height=5, fig.width=5, results='hide'}
+require(stats); require(graphics); data(anscombe)
+ff <- y ~ x
+mods <- setNames(as.list(1:4), paste0("lm", 1:4))
+for(i in 1:4) {
+  ff[2:3] <- lapply(paste0(c("y","x"), i), as.name)
+  ## or   ff[[2]] <- as.name(paste0("y", i))
+  ##      ff[[3]] <- as.name(paste0("x", i))
+  mods[[i]] <- lmi <- lm(ff, data = anscombe)
+  #print(anova(lmi))
+}
+
+
+## Now, do what you should have done in the first place: PLOTS
+op <- par(mfrow = c(2, 2), mar = 0.1+c(4,4,1,1), oma =  c(0, 0, 2, 0))
+for(i in 1:4) {
+  ff[2:3] <- lapply(paste0(c("y","x"), i), as.name)
+  plot(ff, data = anscombe, col = "red", pch = 21, bg = "orange", cex = 1.2,
+       xlim = c(3, 19), ylim = c(3, 13))
+  abline(mods[[i]], col = "blue")
+}
+mtext("Anscombe's 4 Regression data sets", outer = TRUE, cex = 1.5)
+par(op)
+```
+
+---
+## How to derive R squared (Not required!)
+### For those that are interested
+$$
+\begin{align}
+\sum_{i=1}^n (Y_i - \bar Y)^2 
+& = \sum_{i=1}^n (Y_i - \hat Y_i + \hat Y_i - \bar Y)^2 \\
+& = \sum_{i=1}^n (Y_i - \hat Y_i)^2 + 
+2 \sum_{i=1}^n  (Y_i - \hat Y_i)(\hat Y_i - \bar Y) + 
+\sum_{i=1}^n  (\hat Y_i - \bar Y)^2 \\
+\end{align}
+$$
+
+****
+### Scratch work
+$(Y_i - \hat Y_i) = \{Y_i - (\bar Y - \hat \beta_1 \bar X) - \hat \beta_1 X_i\} = (Y_i - \bar Y) - \hat \beta_1 (X_i - \bar X)$
+
+$(\hat Y_i - \bar Y) = (\bar Y - \hat \beta_1 \bar X - \hat \beta_1 X_i - \bar Y )
+= \hat \beta_1  (X_i - \bar X)$
+
+$\sum_{i=1}^n  (Y_i - \hat Y_i)(\hat Y_i - \bar Y) 
+= \sum_{i=1}^n  \{(Y_i - \bar Y) - \hat \beta_1 (X_i - \bar X))\}\{\hat \beta_1  (X_i - \bar X)\}$
+
+$=\hat \beta_1 \sum_{i=1}^n (Y_i - \bar Y)(X_i - \bar X) -\hat\beta_1^2\sum_{i=1}^n (X_i - \bar X)^2$
+
+$= \hat \beta_1^2 \sum_{i=1}^n (X_i - \bar X)^2-\hat\beta_1^2\sum_{i=1}^n (X_i - \bar X)^2 = 0$
+
+
+---
+## The relation between R squared and r
+### (Again not required)
+Recall that $(\hat Y_i - \bar Y) = \hat \beta_1  (X_i - \bar X)$
+so that
+$$
+R^2 = \frac{\sum_{i=1}^n  (\hat Y_i - \bar Y)^2}{\sum_{i=1}^n (Y_i - \bar Y)^2}
+= \hat \beta_1^2  \frac{\sum_{i=1}^n(X_i - \bar X)^2}{\sum_{i=1}^n (Y_i - \bar Y)^2}
+= Cor(Y, X)^2
+$$
+Since, recall, 
+$$
+\hat \beta_1 = Cor(Y, X)\frac{Sd(Y)}{Sd(X)}
+$$
+So, $R^2$ is literally $r$ squared.
+
+
+# Lesson (7)
+
+## Recall our model and fitted values
+* Consider the model
+$$
+Y_i = \beta_0 + \beta_1 X_i + \epsilon_i
+$$
+* $\epsilon \sim N(0, \sigma^2)$. 
+* We assume that the true model is known.
+* We assume that you've seen confidence intervals and hypothesis tests before.
+* $\hat \beta_0 = \bar Y - \hat \beta_1 \bar X$
+* $\hat \beta_1 = Cor(Y, X) \frac{Sd(Y)}{Sd(X)}$.
+
+---
+## Review
+* Statistics like $\frac{\hat \theta - \theta}{\hat \sigma_{\hat \theta}}$ often have the following properties.
+    1. Is normally distributed and has a finite sample Student's T distribution if the  variance is replaced with a sample estimate (under normality assumptions).
+    3. Can be used to test $H_0 : \theta = \theta_0$ versus $H_a : \theta >, <, \neq \theta_0$.
+    4. Can be used to create a confidence interval for $\theta$ via $\hat \theta \pm Q_{1-\alpha/2} \hat \sigma_{\hat \theta}$
+    where $Q_{1-\alpha/2}$ is the relevant quantile from either a normal or T distribution.
+* In the case of regression with iid sampling assumptions and normal errors, our inferences will follow
+very similarily to what you saw in your inference class.
+* We won't cover asymptotics for regression analysis, but suffice it to say that under assumptions 
+on the ways in which the $X$ values are collected, the iid sampling model, and mean model, 
+the normal results hold to create intervals and confidence intervals
+
+---
+## Results
+* $\sigma_{\hat \beta_1}^2 = Var(\hat \beta_1) = \sigma^2 / \sum_{i=1}^n (X_i - \bar X)^2$
+* $\sigma_{\hat \beta_0}^2 = Var(\hat \beta_0)  = \left(\frac{1}{n} + \frac{\bar X^2}{\sum_{i=1}^n (X_i - \bar X)^2 }\right)\sigma^2$
+* In practice, $\sigma$ is replaced by its estimate.
+* It's probably not surprising that under iid Gaussian errors
+$$
+\frac{\hat \beta_j - \beta_j}{\hat \sigma_{\hat \beta_j}}
+$$
+follows a $t$ distribution with $n-2$ degrees of freedom and a normal distribution for large $n$.
+* This can be used to create confidence intervals and perform
+hypothesis tests.
+
+---
+## Example diamond data set
+```{r}
+library(UsingR); data(diamond)
+y <- diamond$price; x <- diamond$carat; n <- length(y)
+beta1 <- cor(y, x) * sd(y) / sd(x)
+beta0 <- mean(y) - beta1 * mean(x)
+e <- y - beta0 - beta1 * x
+sigma <- sqrt(sum(e^2) / (n-2)) 
+ssx <- sum((x - mean(x))^2)
+seBeta0 <- (1 / n + mean(x) ^ 2 / ssx) ^ .5 * sigma 
+seBeta1 <- sigma / sqrt(ssx)
+tBeta0 <- beta0 / seBeta0; tBeta1 <- beta1 / seBeta1
+pBeta0 <- 2 * pt(abs(tBeta0), df = n - 2, lower.tail = FALSE)
+pBeta1 <- 2 * pt(abs(tBeta1), df = n - 2, lower.tail = FALSE)
+coefTable <- rbind(c(beta0, seBeta0, tBeta0, pBeta0), c(beta1, seBeta1, tBeta1, pBeta1))
+colnames(coefTable) <- c("Estimate", "Std. Error", "t value", "P(>|t|)")
+rownames(coefTable) <- c("(Intercept)", "x")
+```
+
+---
+## Example continued
+
+```{r}
+coefTable
+fit <- lm(y ~ x); 
+summary(fit)$coefficients
+```
+
+---
+## Getting a confidence interval
+```{r}
+sumCoef <- summary(fit)$coefficients
+sumCoef[1,1] + c(-1, 1) * qt(.975, df = fit$df) * sumCoef[1, 2]
+(sumCoef[2,1] + c(-1, 1) * qt(.975, df = fit$df) * sumCoef[2, 2]) / 10
+```
+With 95% confidence, we estimate that a 0.1 carat increase in
+diamond size results in a `r round((sumCoef[2,1] - qt(.975, df = fit$df) * sumCoef[2, 2]) / 10, 1)` to `r round((sumCoef[2,1] + qt(.975, df = fit$df) * sumCoef[2, 2]) / 10, 1)` increase in price in (Singapore) dollars.
+
+---
+## Prediction of outcomes
+* Consider predicting $Y$ at a value of $X$
+  * Predicting the price of a diamond given the carat
+  * Predicting the height of a child given the height of the parents
+* The obvious estimate for prediction at point $x_0$ is 
+$$
+\hat \beta_0 + \hat \beta_1 x_0
+$$
+* A standard error is needed to create a prediction interval.
+* There's a distinction between intervals for the regression
+  line at point $x_0$ and the prediction of what a $y$ would be
+  at point $x_0$. 
+* Line at $x_0$ se, $\hat \sigma\sqrt{\frac{1}{n} +  \frac{(x_0 - \bar X)^2}{\sum_{i=1}^n (X_i - \bar X)^2}}$
+* Prediction interval se at $x_0$, $\hat \sigma\sqrt{1 + \frac{1}{n} + \frac{(x_0 - \bar X)^2}{\sum_{i=1}^n (X_i - \bar X)^2}}$
+
+
+---
+## Plotting the prediction intervals
+```{r, fig.height=5, fig.width==5, echo = FALSE, results='hide'}
+library(ggplot2)
+newx = data.frame(x = seq(min(x), max(x), length = 100))
+p1 = data.frame(predict(fit, newdata= newx,interval = ("confidence")))
+p2 = data.frame(predict(fit, newdata = newx,interval = ("prediction")))
+p1$interval = "confidence"
+p2$interval = "prediction"
+p1$x = newx$x
+p2$x = newx$x
+dat = rbind(p1, p2)
+names(dat)[1] = "y"
+
+g = ggplot(dat, aes(x = x, y = y))
+g = g + geom_ribbon(aes(ymin = lwr, ymax = upr, fill = interval), alpha = 0.2) 
+g = g + geom_line()
+g = g + geom_point(data = data.frame(x = x, y=y), aes(x = x, y = y), size = 4)
+g
+```
+
+---
+## Discussion
+* Both intervals have varying widths.
+  * Least width at the mean of the Xs.
+* We are quite confident in the regression line, so that 
+  interval is very narrow.
+  * If we knew $\beta_0$ and $\beta_1$ this interval would have zero width.
+* The prediction interval must incorporate the variabilibity
+  in the data around the line.
+  * Even if we knew $\beta_0$ and $\beta_1$ this interval would still have width.
+
+---
+
+## In R
+```
+# Week 2
+
+# Lesson (8)
+
+## Multivariable regression analyses
+* If I were to present evidence of a relationship between 
+breath mint useage (mints per day, X) and pulmonary function
+(measured in FEV), you would be skeptical.
+  * Likely, you would say, 'smokers tend to use more breath mints than non smokers, smoking is related to a loss in pulmonary function. That's probably the culprit.'
+  * If asked what would convince you, you would likely say, 'If non-smoking breath mint users had lower lung function than non-smoking non-breath mint users and, similarly, if smoking breath mint users had lower lung function than smoking non-breath mint users, I'd be more inclined to believe you'.
+* In other words, to even consider my results, I would have to demonstrate that they hold while holding smoking status fixed.
+
+---
+## Multivariable regression analyses
+* An insurance company is interested in how last year's claims can predict a person's time in the hospital this year. 
+  * They want to use an enormous amount of data contained in claims to predict a single number. Simple linear regression is not equipped to handle more than one predictor.
+* How can one generalize SLR to incoporate lots of regressors for
+the purpose of prediction?
+* What are the consequences of adding lots of regressors? 
+  * Surely there must be consequences to throwing variables in that aren't related to Y?
+  * Surely there must be consequences to omitting variables that are?
+
+---
+## The linear model
+* The general linear model extends simple linear regression (SLR)
+by adding terms linearly into the model.
+$$
+Y_i =  \beta_1 X_{1i} + \beta_2 X_{2i} + \ldots +
+\beta_{p} X_{pi} + \epsilon_{i} 
+= \sum_{k=1}^p X_{ik} \beta_j + \epsilon_{i}
+$$
+* Here $X_{1i}=1$ typically, so that an intercept is included.
+* Least squares (and hence ML estimates under iid Gaussianity 
+of the errors) minimizes
+$$
+\sum_{i=1}^n \left(Y_i - \sum_{k=1}^p X_{ki} \beta_j\right)^2
+$$
+* Note, the important linearity is linearity in the coefficients.
+Thus
+$$
+Y_i =  \beta_1 X_{1i}^2 + \beta_2 X_{2i}^2 + \ldots +
+\beta_{p} X_{pi}^2 + \epsilon_{i} 
+$$
+is still a linear model. (We've just squared the elements of the
+predictor variables.)
+
+---
+## How to get estimates
+* Recall that the LS estimate for regression through the origin, $E[Y_i]=X_{1i}\beta_1$, was $\sum X_i Y_i / \sum X_i^2$.
+* Let's consider two regressors, $E[Y_i] = X_{1i}\beta_1 + X_{2i}\beta_2 = \mu_i$. 
+* Least squares tries to minimize
+$$
+\sum_{i=1}^n (Y_i - X_{1i} \beta_1 - X_{2i} \beta_2)^2
+$$
+
+---
+## Result
+$$\hat \beta_1 = \frac{\sum_{i=1}^n e_{i, Y | X_2} e_{i, X_1 | X_2}}{\sum_{i=1}^n e_{i, X_1 | X_2}^2}$$
+* That is, the regression estimate for $\beta_1$ is the regression 
+through the origin estimate having regressed $X_2$ out of both
+the response and the predictor.
+* (Similarly, the regression estimate for $\beta_2$ is the regression  through the origin estimate having regressed $X_1$ out of both the response and the predictor.)
+* More generally, multivariate regression estimates are exactly those having removed the linear relationship of the other variables
+from both the regressor and response.
+
+---
+## Example with two variables, simple linear regression
+* $Y_{i} = \beta_1 X_{1i} + \beta_2 X_{2i}$ where  $X_{2i} = 1$ is an intercept term.
+* Notice the fitted coefficient of $X_{2i}$ on $Y_{i}$ is $\bar Y$
+    * The residuals $e_{i, Y | X_2} = Y_i - \bar Y$
+* Notice the fitted coefficient of $X_{2i}$ on $X_{1i}$ is $\bar X_1$
+    * The residuals $e_{i, X_1 | X_2}= X_{1i} - \bar X_1$
+* Thus
+$$
+\hat \beta_1 = \frac{\sum_{i=1}^n e_{i, Y | X_2} e_{i, X_1 | X_2}}{\sum_{i=1}^n e_{i, X_1 | X_2}^2} = \frac{\sum_{i=1}^n (X_i - \bar X)(Y_i - \bar Y)}{\sum_{i=1}^n (X_i - \bar X)^2}
+= Cor(X, Y) \frac{Sd(Y)}{Sd(X)}
+$$
+
+---
+## The general case
+* Least squares solutions have to minimize
+$$
+\sum_{i=1}^n (Y_i - X_{1i}\beta_1 - \ldots - X_{pi}\beta_p)^2
+$$
+* The least squares estimate for the coefficient of a multivariate regression model is exactly regression through the origin with the linear relationships with the other regressors removed from both the regressor and outcome by taking residuals. 
+* In this sense, multivariate regression "adjusts" a coefficient for the linear impact of the other variables. 
+
+---
+## Demonstration that it works using an example
+### Linear model with two variables
+```{r}
+n = 100; x = rnorm(n); x2 = rnorm(n); x3 = rnorm(n)
+y = 1 + x + x2 + x3 + rnorm(n, sd = .1)
+ey = resid(lm(y ~ x2 + x3))
+ex = resid(lm(x ~ x2 + x3))
+sum(ey * ex) / sum(ex ^ 2)
+coef(lm(ey ~ ex - 1))
+coef(lm(y ~ x + x2 + x3)) 
+```
+
+---
+## Interpretation of the coeficients
+$$E[Y | X_1 = x_1, \ldots, X_p = x_p] = \sum_{k=1}^p x_{k} \beta_k$$
+
+$$
+E[Y | X_1 = x_1 + 1, \ldots, X_p = x_p] = (x_1 + 1) \beta_1 + \sum_{k=2}^p x_{k} \beta_k
+$$
+
+$$
+E[Y | X_1 = x_1 + 1, \ldots, X_p = x_p]  - E[Y | X_1 = x_1, \ldots, X_p = x_p]$$
+$$= (x_1 + 1) \beta_1 + \sum_{k=2}^p x_{k} \beta_k + \sum_{k=1}^p x_{k} \beta_k = \beta_1 $$
+So that the interpretation of a multivariate regression coefficient is the expected change in the response per unit change in the regressor, holding all of the other regressors fixed.
+
+In the next lecture, we'll do examples and go over context-specific
+interpretations.
+
+---
+## Fitted values, residuals and residual variation
+All of our SLR quantities can be extended to linear models
+* Model $Y_i = \sum_{k=1}^p X_{ik} \beta_{k} + \epsilon_{i}$ where $\epsilon_i \sim N(0, \sigma^2)$
+* Fitted responses $\hat Y_i = \sum_{k=1}^p X_{ik} \hat \beta_{k}$
+* Residuals $e_i = Y_i - \hat Y_i$
+* Variance estimate $\hat \sigma^2 = \frac{1}{n-p} \sum_{i=1}^n e_i ^2$
+* To get predicted responses at new values, $x_1, \ldots, x_p$, simply plug them into the linear model $\sum_{k=1}^p x_{k} \hat \beta_{k}$
+* Coefficients have standard errors, $\hat \sigma_{\hat \beta_k}$, and
+$\frac{\hat \beta_k - \beta_k}{\hat \sigma_{\hat \beta_k}}$
+follows a $T$ distribution with $n-p$ degrees of freedom.
+* Predicted responses have standard errors and we can calculate predicted and expected response intervals.
+
+---
+## Linear models
+* Linear models are the single most important applied statistical and machine learning techniqe, *by far*.
+* Some amazing things that you can accomplish with linear models
+  * Decompose a signal into its harmonics.
+  * Flexibly fit complicated functions.
+  * Fit factor variables as predictors.
+  * Uncover complex multivariate relationships with the response.
+  * Build accurate prediction models.
+
+# Lesson (9)
+
+## Data set for discussion
+### `require(datasets); data(swiss); ?swiss`
+Standardized fertility measure and socio-economic indicators for each of 47 French-speaking provinces of Switzerland at about 1888.
+
+A data frame with 47 observations on 6 variables, each of which is in percent, i.e., in [0, 100].
+
+* [,1]   Fertility          a common standardized fertility measure
+* [,2]   Agriculture        % of males involved in agriculture as occupation
+* [,3]	 Examination        % draftees receiving highest mark on army examination
+* [,4]	 Education          % education beyond primary school for draftees
+* [,5]	 Catholic           % catholic (as opposed to protestant)
+* [,6]	 Infant.Mortality   live births who live less than 1 year
+
+All variables but Fertility give proportions of the population.
+
+---
+
+```{r, fig.height=6, fig.width=10, echo = FALSE}
+require(datasets); data(swiss); require(GGally); require(ggplot2)
+g = ggpairs(swiss, lower = list(continuous = "smooth"),params = c(method = "loess"))
+g
+```
+
+
+---
+## Calling `lm`
+`summary(lm(Fertility ~ . , data = swiss))`
+```{r, echo = FALSE}
+summary(lm(Fertility ~ . , data = swiss))$coefficients
+```
+
+---
+## Example interpretation
+* Agriculture is expressed in percentages (0 - 100)
+* Estimate is -0.1721.
+* Our models estimates an expected 0.17 decrease in standardized fertility for every 1% increase in percentage of males involved in agriculture in holding the remaining variables constant.
+* The t-test for $H_0: \beta_{Agri} = 0$ versus $H_a: \beta_{Agri} \neq 0$ is  significant.
+* Interestingly, the unadjusted estimate is 
+```{r}
+summary(lm(Fertility ~ Agriculture, data = swiss))$coefficients
+```
+
+---
+How can adjustment reverse the sign of an effect? Let's try a simulation.
+```{r, echo = TRUE}
+n <- 100; x2 <- 1 : n; x1 <- .01 * x2 + runif(n, -.1, .1); y = -x1 + x2 + rnorm(n, sd = .01)
+summary(lm(y ~ x1))$coef
+summary(lm(y ~ x1 + x2))$coef
+```
+
+---
+```{r, echo = FALSE, fig.height=5, fig.width=10, results = 'show'}
+dat = data.frame(y = y, x1 = x1, x2 = x2, ey = resid(lm(y ~ x2)), ex1 = resid(lm(x1 ~ x2)))
+library(ggplot2)
+g = ggplot(dat, aes(y = y, x = x1, colour = x2))
+g = g + geom_point(colour="grey50", size = 5) + geom_smooth(method = lm, se = FALSE, colour = "black") 
+g = g + geom_point(size = 4) 
+g
+```
+
+---
+```{r, echo = FALSE, fig.height=5, fig.width=10, results = 'show'}
+g2 = ggplot(dat, aes(y = ey, x = ex1, colour = x2))  
+g2 = g2 + geom_point(colour="grey50", size = 5) + geom_smooth(method = lm, se = FALSE, colour = "black") + geom_point(size = 4) 
+g2
+```
+
+---
+## Back to this data set
+* The sign reverses itself with the inclusion of Examination and Education.
+* The percent of males in the province working in agriculture is negatively related to educational attainment (correlation of `r cor(swiss$Agriculture, swiss$Education)`) and Education and Examination (correlation of `r cor(swiss$Education, swiss$Examination)`) are obviously measuring similar things. 
+  * Is the positive marginal an artifact for not having accounted for, say, Education level? (Education does have a stronger effect, by the way.)
+* At the minimum, anyone claiming that provinces that are more agricultural have higher fertility rates would immediately be open to criticism.
+
+---
+## What if we include an unnecessary variable?
+z adds no new linear information, since it's a linear
+combination of variables already included. R just drops 
+terms that are linear combinations of other terms.
+```{r, echo = TRUE}
+z <- swiss$Agriculture + swiss$Education
+lm(Fertility ~ . + z, data = swiss)
+```
+
+
+---
+## Dummy variables are smart
+* Consider the linear model
+$$
+Y_i = \beta_0 + X_{i1} \beta_1 + \epsilon_{i}
+$$
+where each $X_{i1}$ is binary so that it is a 1 if measurement $i$ is in a group and 0 otherwise. (Treated versus not in a clinical trial, for example.)
+* Then for people in the group $E[Y_i] = \beta_0 + \beta_1$
+* And for people not in the group $E[Y_i] = \beta_0$
+* The LS fits work out to be $\hat \beta_0 + \hat \beta_1$ is the mean for those in the group and $\hat \beta_0$ is the mean for those not in the group.
+* $\beta_1$ is interpretted as the increase or decrease in the mean comparing those in the group to those not.
+* Note including a binary variable that is 1 for those not in the group would be redundant. It would create three parameters to describe two means.
+
+---
+## More than 2 levels
+* Consider a multilevel factor level. For didactic reasons, let's say a three level factor (example, US political party affiliation: Republican, Democrat, Independent)
+* $Y_i = \beta_0 + X_{i1} \beta_1 + X_{i2} \beta_2 + \epsilon_i$.
+* $X_{i1}$ is 1 for Republicans and 0 otherwise.
+* $X_{i2}$ is 1 for Democrats and 0 otherwise.
+* If $i$ is Republican $E[Y_i] = \beta_0 +\beta_1$
+* If $i$ is Democrat $E[Y_i] = \beta_0 + \beta_2$.
+* If $i$ is Independent $E[Y_i] = \beta_0$. 
+* $\beta_1$ compares Republicans to Independents.
+* $\beta_2$ compares Democrats to Independents.
+* $\beta_1 - \beta_2$ compares Republicans to Democrats.
+* (Choice of reference category changes the interpretation.)
+
+---
+## Insect Sprays
+```{r, echo = FALSE, fig.height=5, fig.width=5}
+require(datasets);data(InsectSprays); require(stats); require(ggplot2)
+g = ggplot(data = InsectSprays, aes(y = count, x = spray, fill  = spray))
+g = g + geom_violin(colour = "black", size = 2)
+g = g + xlab("Type of spray") + ylab("Insect count")
+g
+
+```
+
+---
+## Linear model fit, group A is the reference
+```{r, echo= TRUE}
+summary(lm(count ~ spray, data = InsectSprays))$coef
+```
+
+---
+## Hard coding the dummy variables
+```{r, echo= TRUE}
+summary(lm(count ~ 
+             I(1 * (spray == 'B')) + I(1 * (spray == 'C')) + 
+             I(1 * (spray == 'D')) + I(1 * (spray == 'E')) +
+             I(1 * (spray == 'F'))
+           , data = InsectSprays))$coef
+```
+
+---
+## What if we include all 6?
+```{r, echo= TRUE}
+summary(lm(count ~ 
+   I(1 * (spray == 'B')) + I(1 * (spray == 'C')) +  
+   I(1 * (spray == 'D')) + I(1 * (spray == 'E')) +
+   I(1 * (spray == 'F')) + I(1 * (spray == 'A')), data = InsectSprays))$coef
+```
+
+---
+## What if we omit the intercept?
+```{r, echo= TRUE}
+summary(lm(count ~ spray - 1, data = InsectSprays))$coef
+library(dplyr)
+summarise(group_by(InsectSprays, spray), mn = mean(count))
+```
+
+---
+## Reordering the levels
+```{r}
+spray2 <- relevel(InsectSprays$spray, "C")
+summary(lm(count ~ spray2, data = InsectSprays))$coef
+```
+---
+## Summary
+* If we treat Spray as a factor, R includes an intercept and omits the alphabetically first level of the factor.
+  * All t-tests are for comparisons of Sprays versus Spray A.
+  * Emprirical mean for A is the intercept.
+  * Other group means are the itc plus their coefficient. 
+* If we omit an intercept, then it includes terms for all levels of the factor. 
+  * Group means are the coefficients. 
+  * Tests are tests of whether the groups are different than zero. (Are the expected counts zero for that spray.)
+* If we want comparisons between, Spray B and C, say we could refit the model with C (or B) as the reference level. 
+
+
+---
+## Other thoughts on this data
+* Counts are bounded from below by 0, violates the assumption of normality of the errors. 
+  * Also there are counts near zero, so both the actual assumption and the intent of the assumption are violated.
+* Variance does not appear to be constant.
+* Perhaps taking logs of the counts would help. 
+  * There are 0 counts, so maybe log(Count + 1)
+* Also, we'll cover Poisson GLMs for fitting count data.
+
+---
+
+## Recall the `swiss` data set
+
+```{r}
+library(datasets); data(swiss)
+head(swiss)
+```
+
+---
+## Create a binary variable
+```{r}
+library(dplyr); 
+swiss = mutate(swiss, CatholicBin = 1 * (Catholic > 50))
+```
+
+---
+## Plot the data 
+```{r, fig.height=5, fig.width=8, echo = FALSE}
+g = ggplot(swiss, aes(x = Agriculture, y = Fertility, colour = factor(CatholicBin)))
+g = g + geom_point(size = 6, colour = "black") + geom_point(size = 4)
+g = g + xlab("% in Agriculture") + ylab("Fertility")
+g
+```
+
+---
+## No effect of religion
+```{r, echo = TRUE}
+summary(lm(Fertility ~ Agriculture, data = swiss))$coef
+```
+
+---
+## The associated fitted line
+```{r, echo = FALSE, fig.width=8, fig.height=5}
+fit = lm(Fertility ~ Agriculture, data = swiss)
+g1 = g
+g1 = g1 + geom_abline(intercept = coef(fit)[1], slope = coef(fit)[2], size = 2)
+g1
+```
+
+
+---
+## Parallel lines
+```{r, echo = TRUE}
+summary(lm(Fertility ~ Agriculture + factor(CatholicBin), data = swiss))$coef
+```
+
+---
+## Fitted lines
+```{r, echo = FALSE, fig.width=5, fig.height=4}
+fit = lm(Fertility ~ Agriculture + factor(CatholicBin), data = swiss)
+g1 = g
+g1 = g1 + geom_abline(intercept = coef(fit)[1], slope = coef(fit)[2], size = 2)
+g1 = g1 + geom_abline(intercept = coef(fit)[1] + coef(fit)[3], slope = coef(fit)[2], size = 2)
+g1
+```
+
+
+---
+## Lines with different slopes and intercepts
+```{r, echo = TRUE}
+summary(lm(Fertility ~ Agriculture * factor(CatholicBin), data = swiss))$coef
+```
+
+---
+## Fitted lines
+```{r, echo = FALSE, fig.width=5, fig.height=4}
+fit = lm(Fertility ~ Agriculture * factor(CatholicBin), data = swiss)
+g1 = g
+g1 = g1 + geom_abline(intercept = coef(fit)[1], slope = coef(fit)[2], size = 2)
+g1 = g1 + geom_abline(intercept = coef(fit)[1] + coef(fit)[3], 
+                          slope = coef(fit)[2] + coef(fit)[4], size = 2)
+g1
+```
+
+---
+## Just to show you it can be done
+```{r, echo = TRUE}
+summary(lm(Fertility ~ Agriculture + Agriculture : factor(CatholicBin), data = swiss))$coef
+```
+
+# Lesson (10)
+
+## Consider the following simulated data
+Code for the first plot, rest omitted
+(See the git repo for the rest of the code.)
+```
+n <- 100; t <- rep(c(0, 1), c(n/2, n/2)); x <- c(runif(n/2), runif(n/2));
+beta0 <- 0; beta1 <- 2; tau <- 1; sigma <- .2
+y <- beta0 + x * beta1 + t * tau + rnorm(n, sd = sigma)
+plot(x, y, type = "n", frame = FALSE)
+abline(lm(y ~ x), lwd = 2)
+abline(h = mean(y[1 : (n/2)]), lwd = 3)
+abline(h = mean(y[(n/2 + 1) : n]), lwd = 3)
+fit <- lm(y ~ x + t)
+abline(coef(fit)[1], coef(fit)[2], lwd = 3)
+abline(coef(fit)[1] + coef(fit)[3], coef(fit)[2], lwd = 3)
+points(x[1 : (n/2)], y[1 : (n/2)], pch = 21, col = "black", bg = "lightblue", cex = 2)
+points(x[(n/2 + 1) : n], y[(n/2 + 1) : n], pch = 21, col = "black", bg = "salmon", cex = 2)
+```
+
+
+---
+## Simulation 1
+```{r, fig.height=5, fig.width=5, echo = FALSE, results='hide'}
+n <- 100; t <- rep(c(0, 1), c(n/2, n/2)); x <- c(runif(n/2), runif(n/2));
+beta0 <- 0; beta1 <- 2; tau <- 1; sigma <- .2
+y <- beta0 + x * beta1 + t * tau + rnorm(n, sd = sigma)
+plot(x, y, type = "n", frame = FALSE)
+abline(lm(y ~ x), lwd = 2)
+abline(h = mean(y[1 : (n/2)]), lwd = 3)
+abline(h = mean(y[(n/2 + 1) : n]), lwd = 3)
+fit <- lm(y ~ x + t)
+abline(coef(fit)[1], coef(fit)[2], lwd = 3)
+abline(coef(fit)[1] + coef(fit)[3], coef(fit)[2], lwd = 3)
+points(x[1 : (n/2)], y[1 : (n/2)], pch = 21, col = "black", bg = "lightblue", cex = 2)
+points(x[(n/2 + 1) : n], y[(n/2 + 1) : n], pch = 21, col = "black", bg = "salmon", cex = 2)
+```
+
+---
+## Discussion
+### Some things to note in this simulation
+* The X variable is unrelated to group status
+* The X variable is related to Y, but the intercept depends
+  on group status.
+* The group variable is related to Y.
+  * The relationship between group status and Y is constant depending on X.
+  * The relationship between group and Y disregarding X is about the same as holding X constant
+
+---
+## Simulation 2
+```{r, fig.height=5, fig.width=5, echo = FALSE, results='hide'}
+n <- 100; t <- rep(c(0, 1), c(n/2, n/2)); x <- c(runif(n/2), 1.5 + runif(n/2));
+beta0 <- 0; beta1 <- 2; tau <- 0; sigma <- .2
+y <- beta0 + x * beta1 + t * tau + rnorm(n, sd = sigma)
+plot(x, y, type = "n", frame = FALSE)
+abline(lm(y ~ x), lwd = 2)
+abline(h = mean(y[1 : (n/2)]), lwd = 3)
+abline(h = mean(y[(n/2 + 1) : n]), lwd = 3)
+fit <- lm(y ~ x + t)
+abline(coef(fit)[1], coef(fit)[2], lwd = 3)
+abline(coef(fit)[1] + coef(fit)[3], coef(fit)[2], lwd = 3)
+points(x[1 : (n/2)], y[1 : (n/2)], pch = 21, col = "black", bg = "lightblue", cex = 2)
+points(x[(n/2 + 1) : n], y[(n/2 + 1) : n], pch = 21, col = "black", bg = "salmon", cex = 2)
+```
+
+
+---
+## Discussion
+### Some things to note in this simulation
+* The X variable is highly related to group status
+* The X variable is related to Y, the intercept
+  doesn't depend on the group variable.
+  * The X variable remains related to Y holding group status constant
+* The group variable is marginally related to Y disregarding X.
+* The model would estimate no adjusted effect due to group.
+  * There isn't any data to inform the relationship between
+    group and Y.
+  * This conclusion is entirely based on the model.
+
+---
+## Simulation 3
+```{r, fig.height=5, fig.width=5, echo = FALSE, results='hide'}
+n <- 100; t <- rep(c(0, 1), c(n/2, n/2)); x <- c(runif(n/2), .9 + runif(n/2));
+beta0 <- 0; beta1 <- 2; tau <- -1; sigma <- .2
+y <- beta0 + x * beta1 + t * tau + rnorm(n, sd = sigma)
+plot(x, y, type = "n", frame = FALSE)
+abline(lm(y ~ x), lwd = 2)
+abline(h = mean(y[1 : (n/2)]), lwd = 3)
+abline(h = mean(y[(n/2 + 1) : n]), lwd = 3)
+fit <- lm(y ~ x + t)
+abline(coef(fit)[1], coef(fit)[2], lwd = 3)
+abline(coef(fit)[1] + coef(fit)[3], coef(fit)[2], lwd = 3)
+points(x[1 : (n/2)], y[1 : (n/2)], pch = 21, col = "black", bg = "lightblue", cex = 2)
+points(x[(n/2 + 1) : n], y[(n/2 + 1) : n], pch = 21, col = "black", bg = "salmon", cex = 2)
+```
+
+---
+## Discussion
+### Some things to note in this simulation
+* Marginal association has red group higher than blue.
+* Adjusted relationship has blue group higher than red.
+* Group status related to X.
+* There is some direct evidence for comparing red and blue
+holding X fixed.
+
+
+
+---
+## Simulation 4
+```{r, fig.height=5, fig.width=5, echo = FALSE, results='hide'}
+n <- 100; t <- rep(c(0, 1), c(n/2, n/2)); x <- c(.5 + runif(n/2), runif(n/2));
+beta0 <- 0; beta1 <- 2; tau <- 1; sigma <- .2
+y <- beta0 + x * beta1 + t * tau + rnorm(n, sd = sigma)
+plot(x, y, type = "n", frame = FALSE)
+abline(lm(y ~ x), lwd = 2)
+abline(h = mean(y[1 : (n/2)]), lwd = 3)
+abline(h = mean(y[(n/2 + 1) : n]), lwd = 3)
+fit <- lm(y ~ x + t)
+abline(coef(fit)[1], coef(fit)[2], lwd = 3)
+abline(coef(fit)[1] + coef(fit)[3], coef(fit)[2], lwd = 3)
+points(x[1 : (n/2)], y[1 : (n/2)], pch = 21, col = "black", bg = "lightblue", cex = 2)
+points(x[(n/2 + 1) : n], y[(n/2 + 1) : n], pch = 21, col = "black", bg = "salmon", cex = 2)
+```
+
+---
+## Discussion
+### Some things to note in this simulation
+* No marginal association between group status and Y.
+* Strong adjusted relationship.
+* Group status not related to X.
+* There is lots of direct evidence for comparing red and blue
+holding X fixed.
+
+---
+## Simulation 5
+```{r, fig.height=5, fig.width=5, echo = FALSE, results='hide'}
+n <- 100; t <- rep(c(0, 1), c(n/2, n/2)); x <- c(runif(n/2, -1, 1), runif(n/2, -1, 1));
+beta0 <- 0; beta1 <- 2; tau <- 0; tau1 <- -4; sigma <- .2
+y <- beta0 + x * beta1 + t * tau + t * x * tau1 + rnorm(n, sd = sigma)
+plot(x, y, type = "n", frame = FALSE)
+abline(lm(y ~ x), lwd = 2)
+abline(h = mean(y[1 : (n/2)]), lwd = 3)
+abline(h = mean(y[(n/2 + 1) : n]), lwd = 3)
+fit <- lm(y ~ x + t + I(x * t))
+abline(coef(fit)[1], coef(fit)[2], lwd = 3)
+abline(coef(fit)[1] + coef(fit)[3], coef(fit)[2] + coef(fit)[4], lwd = 3)
+points(x[1 : (n/2)], y[1 : (n/2)], pch = 21, col = "black", bg = "lightblue", cex = 2)
+points(x[(n/2 + 1) : n], y[(n/2 + 1) : n], pch = 21, col = "black", bg = "salmon", cex = 2)
+```
+
+---
+## Discussion
+### Some things to note from this simulation
+* There is no such thing as a group effect here.
+  * The impact of group reverses itself depending on X.
+  * Both intercept and slope depends on group.
+* Group status and X unrelated.
+  * There's lots of information about group effects holding X fixed.
+
+---
+### Simulation 6
+```{r, fig.height=5, fig.width=5, echo = FALSE, results='hide'}
+p <- 1
+n <- 100; x2 <- runif(n); x1 <- p * runif(n) - (1 - p) * x2
+beta0 <- 0; beta1 <- 1; tau <- 4 ; sigma <- .01
+y <- beta0 + x1 * beta1 + tau * x2 + rnorm(n, sd = sigma)
+plot(x1, y, type = "n", frame = FALSE)
+abline(lm(y ~ x1), lwd = 2)
+co.pal <- heat.colors(n)
+points(x1, y, pch = 21, col = "black", bg = co.pal[round((n - 1) * x2 + 1)], cex = 2)
+```
+
+---
+### Do this to investigate the bivariate relationship
+```
+library(rgl)
+plot3d(x1, x2, y)
+```
+
+---
+### Residual relationship
+```{r, fig.height=5, fig.width=5, echo = FALSE, results='hide'}
+plot(resid(lm(x1 ~ x2)), resid(lm(y ~ x2)), frame = FALSE, col = "black", bg = "lightblue", pch = 21, cex = 2)
+abline(lm(I(resid(lm(x1 ~ x2))) ~ I(resid(lm(y ~ x2)))), lwd = 2)
+```
+
+
+---
+## Discussion
+### Some things to note from this simulation
+
+* X1 unrelated to X2
+* X2 strongly related to Y
+* Adjusted relationship between X1 and Y largely unchanged
+  by considering X2.
+  * Almost no residual variability after accounting for X2.
+
+---
+## Some final thoughts
+* Modeling multivariate relationships is difficult.
+* Play around with simulations to see how the
+  inclusion or exclusion of another variable can
+  change analyses.
+* The results of these analyses deal with the
+impact of variables on associations.
+  * Ascertaining mechanisms or cause are difficult subjects
+    to be added on top of difficulty in understanding multivariate associations.
+
+# Lesson (11)
+
+## The linear model
+* Specified as $Y_i =  \sum_{k=1}^p X_{ik} \beta_j + \epsilon_{i}$
+* We'll also assume here that $\epsilon_i \stackrel{iid}{\sim} N(0, \sigma^2)$
+* Define the residuals as
+$e_i = Y_i -  \hat Y_i =  Y_i - \sum_{k=1}^p X_{ik} \hat \beta_j$
+* Our estimate of residual variation is $\hat \sigma^2 = \frac{\sum_{i=1}^n e_i^2}{n-p}$, the $n-p$ so that $E[\hat \sigma^2] = \sigma^2$
+
+---
+```{r, fig.height = 5, fig.width = 5}
+data(swiss); par(mfrow = c(2, 2))
+fit <- lm(Fertility ~ . , data = swiss); plot(fit)
+```
+
+---
+## Influential, high leverage and outlying points
+```{r, fig.height = 5, fig.width=5, echo = FALSE, results='hide'}
+n <- 100; x <- rnorm(n); y <- x + rnorm(n, sd = .3)
+plot(c(-3, 6), c(-3, 6), type = "n", frame = FALSE, xlab = "X", ylab = "Y")
+abline(lm(y ~ x), lwd = 2)
+points(x, y, cex = 2, bg = "lightblue", col = "black", pch = 21)
+points(0, 0, cex = 2, bg = "darkorange", col = "black", pch = 21)
+points(0, 5, cex = 2, bg = "darkorange", col = "black", pch = 21)
+points(5, 5, cex = 2, bg = "darkorange", col = "black", pch = 21)
+points(5, 0, cex = 2, bg = "darkorange", col = "black", pch = 21)
+```
+
+---
+## Summary of the plot
+Calling a point an outlier is vague. 
+  * Outliers can be the result of spurious or real processes.
+  * Outliers can have varying degrees of influence.
+  * Outliers can conform to the regression relationship (i.e being marginally outlying in X or Y, but not outlying given the regression relationship).
+* Upper left hand point has low leverage, low influence, outlies in a way not conforming to the regression relationship.
+* Lower left hand point has low leverage, low influence and is not to be an outlier in any sense.
+* Upper right hand point has high leverage, but chooses not to extert it and thus would have low actual influence by conforming to the regresison relationship of the other points.
+* Lower right hand point has high leverage and would exert it if it were included in the fit.
+
+---
+## Influence measures
+* Do `?influence.measures` to see the full suite of influence measures in stats. The measures include
+  * `rstandard` - standardized residuals, residuals divided by their standard deviations)
+  * `rstudent` - standardized residuals, residuals divided by their standard deviations, where the ith data point was deleted in the calculation of the standard deviation for the residual to follow a t distribution
+  * `hatvalues` - measures of leverage
+  * `dffits` - change in the predicted response when the $i^{th}$ point is deleted in fitting the model.
+  * `dfbetas` - change in individual coefficients when the $i^{th}$ point is deleted in fitting the model.
+  * `cooks.distance` - overall change in teh coefficients when the $i^{th}$ point is deleted.
+  * `resid` - returns the ordinary residuals
+  * `resid(fit) / (1 - hatvalues(fit))` where `fit` is the linear model fit returns the PRESS residuals, i.e. the leave one out cross validation residuals - the difference in the response and the predicted response at data point $i$, where it was not included in the model fitting.
+
+---
+## How do I use all of these things?
+* Be wary of simplistic rules for diagnostic plots and measures. The use of these tools is context specific. It's better to understand what they are trying to accomplish and use them judiciously.
+* Not all of the measures have meaningful absolute scales. You can look at them relative to the values across the data.
+* They probe your data in different ways to diagnose different problems. 
+* Patterns in your residual plots generally indicate some poor aspect of model fit. These can include:
+  * Heteroskedasticity (non constant variance).
+  * Missing model terms.
+  * Temporal patterns (plot residuals versus collection order).
+* Residual QQ plots investigate normality of the errors.
+* Leverage measures (hat values) can be useful for diagnosing data entry errors.
+* Influence measures get to the bottom line, 'how does deleting or including this point impact a particular aspect of the model'.
+
+---
+## Case 1
+```{r, fig.height=5, fig.width=5, echo=FALSE}
+x <- c(10, rnorm(n)); y <- c(10, c(rnorm(n)))
+plot(x, y, frame = FALSE, cex = 2, pch = 21, bg = "lightblue", col = "black")
+abline(lm(y ~ x))            
+```
+
+---
+## The code
+```
+n <- 100; x <- c(10, rnorm(n)); y <- c(10, c(rnorm(n)))
+plot(x, y, frame = FALSE, cex = 2, pch = 21, bg = "lightblue", col = "black")
+abline(lm(y ~ x))            
+```
+* The point `c(10, 10)` has created a strong regression relationship where there shouldn't be one.
+
+---
+## Showing a couple of the diagnostic values
+```{r}
+fit <- lm(y ~ x)
+round(dfbetas(fit)[1 : 10, 2], 3)
+round(hatvalues(fit)[1 : 10], 3)
+```
+
+---
+## Case 2
+```{r, fig.height=5, fig.width=5, echo=FALSE}
+x <- rnorm(n); y <- x + rnorm(n, sd = .3)
+x <- c(5, x); y <- c(5, y)
+plot(x, y, frame = FALSE, cex = 2, pch = 21, bg = "lightblue", col = "black")
+fit2 <- lm(y ~ x)
+abline(fit2)            
+```
+
+---
+## Looking at some of the diagnostics
+```{r, echo = TRUE}
+round(dfbetas(fit2)[1 : 10, 2], 3)
+round(hatvalues(fit2)[1 : 10], 3)
+```
+
+---
+## Example described by Stefanski TAS 2007 Vol 61.
+```{r, fig.height=4, fig.width=4}
+## Don't everyone hit this server at once.  Read the paper first.
+dat <- read.table('http://www4.stat.ncsu.edu/~stefanski/NSF_Supported/Hidden_Images/orly_owl_files/orly_owl_Lin_4p_5_flat.txt', header = FALSE)
+pairs(dat)
+```
+
+---
+## Got our P-values, should we bother to do a residual plot?
+```{r}
+summary(lm(V1 ~ . -1, data = dat))$coef
+```
+
+---
+## Residual plot
+### P-values significant, O RLY?
+```{r, fig.height=4, fig.width=4, echo = TRUE}
+fit <- lm(V1 ~ . - 1, data = dat); plot(predict(fit), resid(fit), pch = '.')
+```
+
+---
+## Back to the Swiss data
+```{r, fig.height = 5, fig.width = 5, echo=FALSE}
+data(swiss); par(mfrow = c(2, 2))
+fit <- lm(Fertility ~ . , data = swiss); plot(fit)
+```
+
+# Lesson (12)
+
+## Multivariable regression
+* We have an entire class on prediction and machine learning, so we'll focus on modeling.
+  * Prediction has a different set of criteria, needs for interpretability and standards for generalizability.
+  * In modeling, our interest lies in parsimonious, interpretable representations of the data that enhance our understanding of the phenomena under study.
+  * A model is a lense through which to look at your data. (I attribute this quote to Scott Zeger)
+  * Under this philosophy, what's the right model? Whatever model connects the data to a true, parsimonious statement about what you're studying.
+* There are nearly uncontable ways that a model can be wrong, in this lecture, we'll focus on variable inclusion and exclusion.
+* Like nearly all aspects of statistics, good modeling decisions are context dependent.
+  * A good model for prediction versus one for studying mechanisms versus one for trying to establish causal effects may not be the same.
+
+---
+## The Rumsfeldian triplet
+
+*There are known knowns. These are things we know that we know. There are known unknowns. That is to say, there are things that we know we don't know. But there are also unknown unknowns. There are things we don't know we don't know.* Donald Rumsfeld
+
+In our context
+* (Known knowns) Regressors that we know we should check to include in the model and have.
+* (Known Unknowns) Regressors that we would like to include in the model, but don't have.
+* (Unknown Unknowns) Regressors that we don't even know about that we should have included in the model.
+
+---
+## General rules
+* Omitting variables results in bias in the coeficients of interest - unless their regressors are uncorrelated with the omitted ones.
+  * This is why we randomize treatments, it attempts to uncorrelate our treatment indicator with variables that we don't have to put in the model. 
+  * (If there's too many unobserved confounding variables, even randomization won't help you.)
+* Including variables that we shouldn't have increases standard errors of the regression variables.
+  * Actually, including any new variables increasese (actual, not estimated) standard errors of other regressors. So we don't want to idly throw variables into the model.
+* The model must tend toward perfect fit as the number of non-redundant regressors approaches $n$.
+* $R^2$ increases monotonically as more regressors are included.
+* The SSE decreases monotonically as more regressors are included.
+
+---
+## Plot of $R^2$ versus $n$
+For simulations as the number of variables included equals increases to $n=100$. 
+No actual regression relationship exist in any simulation
+```{r, fig.height=5, fig.width=5, echo=FALSE}
+ n <- 100
+plot(c(1, n), 0 : 1, type = "n", frame = FALSE, xlab = "p", ylab = "R^2")
+r <- sapply(1 : n, function(p)
+      {
+        y <- rnorm(n); x <- matrix(rnorm(n * p), n, p)
+        summary(lm(y ~ x))$r.squared 
+      }
+    )
+lines(1 : n, r, lwd = 2)
+abline(h = 1)
+```
+
+---
+## Variance inflation
+```{r, echo = TRUE}
+n <- 100; nosim <- 1000
+x1 <- rnorm(n); x2 <- rnorm(n); x3 <- rnorm(n); 
+betas <- sapply(1 : nosim, function(i){
+  y <- x1 + rnorm(n, sd = .3)
+  c(coef(lm(y ~ x1))[2], 
+    coef(lm(y ~ x1 + x2))[2], 
+    coef(lm(y ~ x1 + x2 + x3))[2])
+})
+round(apply(betas, 1, sd), 5)
+```
+
+---
+## Variance inflation
+```{r, echo = TRUE}
+n <- 100; nosim <- 1000
+x1 <- rnorm(n); x2 <- x1/sqrt(2) + rnorm(n) /sqrt(2)
+x3 <- x1 * 0.95 + rnorm(n) * sqrt(1 - 0.95^2); 
+betas <- sapply(1 : nosim, function(i){
+  y <- x1 + rnorm(n, sd = .3)
+  c(coef(lm(y ~ x1))[2], 
+    coef(lm(y ~ x1 + x2))[2], 
+    coef(lm(y ~ x1 + x2 + x3))[2])
+})
+round(apply(betas, 1, sd), 5)
+```
+
+
+---
+## Variance inflation factors
+* Notice variance inflation was much worse when we included a variable that
+was highly related to `x1`. 
+* We don't know $\sigma$, so we can only estimate the increase in the actual standard error of the coefficients for including a regressor.
+* However, $\sigma$ drops out of the relative standard errors. If one sequentially adds variables, one can check the variance (or sd) inflation for including each one.
+* When the other regressors are actually orthogonal to the regressor of interest, then there is no variance inflation.
+* The variance inflation factor (VIF) is the increase in the variance for the ith regressor compared to the ideal setting where it is orthogonal to the other regressors.
+  * (The square root of the VIF is the increase in the sd ...)
+* Remember, variance inflation is only part of the picture. We want to include certain variables, even if they dramatically inflate our variance. 
+
+---
+## Revisting our previous simulation
+```{r, echo = TRUE}
+##doesn't depend on which y you use,
+y <- x1 + rnorm(n, sd = .3)
+a <- summary(lm(y ~ x1))$cov.unscaled[2,2]
+c(summary(lm(y ~ x1 + x2))$cov.unscaled[2,2],
+  summary(lm(y~ x1 + x2 + x3))$cov.unscaled[2,2]) / a
+temp <- apply(betas, 1, var); temp[2 : 3] / temp[1]
+```
+---
+## Swiss data
+```{r}
+data(swiss); 
+fit1 <- lm(Fertility ~ Agriculture, data = swiss)
+a <- summary(fit1)$cov.unscaled[2,2]
+fit2 <- update(fit, Fertility ~ Agriculture + Examination)
+fit3 <- update(fit, Fertility ~ Agriculture + Examination + Education)
+  c(summary(fit2)$cov.unscaled[2,2],
+    summary(fit3)$cov.unscaled[2,2]) / a 
+```
+
+---
+## Swiss data VIFs, 
+```{r}
+library(car)
+fit <- lm(Fertility ~ . , data = swiss)
+vif(fit)
+sqrt(vif(fit)) #I prefer sd 
+```
+
+---
+## What about residual variance estimation?
+* Assuming that the model is linear with additive iid errors (with finite variance), we can mathematically describe the impact of omitting necessary variables or including unnecessary ones.
+  * If we underfit the model, the variance estimate is biased. 
+  * If we correctly or overfit the model, including all necessary covariates and/or unnecessary covariates, the variance estimate is unbiased.
+    * However, the variance of the variance is larger if we include unnecessary variables.
+
+---
+## Covariate model selection
+* Automated covariate selection is a difficult topic. It depends heavily on how rich of a covariate space one wants to explore. 
+  * The space of models explodes quickly as you add interactions and polynomial terms. 
+* In the prediction class, we'll cover many modern methods for traversing large model spaces for the purposes of prediction.
+* Principal components or factor analytic models on covariates are often useful for reducing complex covariate spaces.
+* Good design can often eliminate the need for complex model searches at analyses; though often control over the design is limited.
+* If the models of interest are nested and without lots of parameters differentiating them, it's fairly uncontroversial to use nested likelihood ratio tests. (Example to follow.)
+* My favoriate approach is as follows. Given a coefficient that I'm interested in, I like to use covariate adjustment and multiple models to probe that effect to evaluate it for robustness and to see what other covariates knock it out.  This isn't a terribly systematic approach, but it tends to teach you a lot about the the data as you get your hands dirty.
+
+---
+## How to do nested model testing in R
+```{r}
+fit1 <- lm(Fertility ~ Agriculture, data = swiss)
+fit3 <- update(fit, Fertility ~ Agriculture + Examination + Education)
+fit5 <- update(fit, Fertility ~ Agriculture + Examination + Education + Catholic + Infant.Mortality)
+anova(fit1, fit3, fit5)
+```
+
+# Lesson (13)
+
+## Linear models
+* Linear models are the most useful applied statistical technique. However, they are not without their limitations.
+  * Additive response models don't make much sense if the response is discrete, or stricly positive.
+  * Additive error models often don't make sense, for example if the outcome has to be positive. 
+  * Transformations are often hard to interpret. 
+    * There's value in modeling the data on the scale that it was collected.
+    * Particularly interpetable transformations, natural logarithms in specific,   aren't applicable for negative or zero values.
+
+
+
+---
+## Generalized linear models
+* Introduced in a 1972 RSSB paper by Nelder and Wedderburn. 
+* Involves three components
+  * An *exponential family* model for the response.
+  * A systematic component via a linear predictor.
+  * A link function that connects the means of the response to the linear predictor.
+  
+
+---
+## Example, linear models
+* Assume that $Y_i \sim N(\mu_i, \sigma^2)$ (the Gaussian distribution is an exponential family distribution.)
+* Define the linear predictor to be $\eta_i = \sum_{k=1}^p X_{ik} \beta_k$.
+* The link function as $g$ so that $g(\mu) = \eta$.
+  * For linear models $g(\mu) = \mu$ so that $\mu_i = \eta_i$
+* This yields the same likelihood model as our additive error Gaussian linear model
+$$
+Y_i = \sum_{k=1}^p X_{ik} \beta_k + \epsilon_{i}
+$$
+where $\epsilon_i \stackrel{iid}{\sim} N(0, \sigma^2)$
+
+---
+## Example, logistic regression
+* Assume that $Y_i \sim Bernoulli(\mu_i)$ so that $E[Y_i] = \mu_i$ where $0\leq \mu_i \leq 1$.
+* Linear predictor $\eta_i = \sum_{k=1}^p X_{ik} \beta_k$
+* Link function 
+$g(\mu) = \eta = \log\left( \frac{\mu}{1 - \mu}\right)$
+$g$ is the (natural) log odds, referred to as the **logit**.
+* Note then we can invert the logit function as
+$$
+\mu_i = \frac{\exp(\eta_i)}{1 + \exp(\eta_i)} ~~~\mbox{and}~~~
+1 - \mu_i = \frac{1}{1 + \exp(\eta_i)}
+$$
+Thus the likelihood is
+$$
+\prod_{i=1}^n \mu_i^{y_i} (1 - \mu_i)^{1-y_i}
+= \exp\left(\sum_{i=1}^n y_i \eta_i \right)
+\prod_{i=1}^n (1 + \eta_i)^{-1}
+$$
+
+---
+## Example, Poisson regression
+* Assume that $Y_i \sim Poisson(\mu_i)$ so that $E[Y_i] = \mu_i$ where $0\leq \mu_i$
+* Linear predictor $\eta_i = \sum_{k=1}^p X_{ik} \beta_k$
+* Link function 
+$g(\mu) = \eta = \log(\mu)$
+* Recall that $e^x$ is the inverse of $\log(x)$ so that 
+$$
+\mu_i = e^{\eta_i}
+$$
+Thus, the likelihood is
+$$
+\prod_{i=1}^n (y_i !)^{-1} \mu_i^{y_i}e^{-\mu_i}
+\propto \exp\left(\sum_{i=1}^n y_i \eta_i - \sum_{i=1}^n \mu_i\right)
+$$
+
+---
+## Some things to note
+* In each case, the only way in which the likelihood depends on the data is through 
+$$\sum_{i=1}^n y_i \eta_i =
+\sum_{i=1}^n y_i\sum_{k=1}^p X_{ik} \beta_k = 
+\sum_{k=1}^p \beta_k\sum_{i=1}^n X_{ik} y_i
+$$
+Thus if we don't need the full data, only $\sum_{i=1}^n X_{ik} y_i$. This simplification is a consequence of chosing so-called 'canonical' link functions.
+* (This has to be derived). All models achieve their maximum at the root of the so called normal equations
+$$
+0=\sum_{i=1}^n \frac{(Y_i - \mu_i)}{Var(Y_i)}W_i
+$$
+where $W_i$ are the derivative of the inverse of the link function.
+
+---
+## About variances
+$$
+0=\sum_{i=1}^n \frac{(Y_i - \mu_i)}{Var(Y_i)}W_i
+$$
+* For the linear model $Var(Y_i) = \sigma^2$ is constant.
+* For Bernoulli case $Var(Y_i) = \mu_i (1 - \mu_i)$
+* For the Poisson case $Var(Y_i) = \mu_i$. 
+* In the latter cases, it is often relevant to have a more flexible variance model, even if it doesn't correspond to an actual likelihood
+$$
+0=\sum_{i=1}^n \frac{(Y_i - \mu_i)}{\phi \mu_i (1 - \mu_i ) } W_i ~~~\mbox{and}~~~
+0=\sum_{i=1}^n \frac{(Y_i - \mu_i)}{\phi \mu_i} W_i
+$$
+* These are called 'quasi-likelihood' normal equations 
+
+---
+## Odds and ends
+* The normal equations have to be solved iteratively. Resulting in 
+$\hat \beta_k$ and, if included, $\hat \phi$.
+* Predicted linear predictor responses can be obtained as $\hat \eta = \sum_{k=1}^p X_k \hat \beta_k$
+* Predicted mean responses as $\hat \mu = g^{-1}(\hat \eta)$
+* Coefficients are interpretted as 
+$$
+g(E[Y | X_k = x_k + 1, X_{\sim k} = x_{\sim k}]) - g(E[Y | X_k = x_k, X_{\sim k}=x_{\sim k}]) = \beta_k
+$$
+or the change in the link function of the expected response per unit change in $X_k$ holding other regressors constant.
+* Variations on Newon/Raphson's algorithm are used to do it.
+* Asymptotics are used for inference usually. 
+* Many of the ideas from linear models can be brought over to GLMs.
+
+# Lesson (14)
+
+
+## Key ideas
+
+* Frequently we care about outcomes that have two values
+  * Alive/dead
+  * Win/loss
+  * Success/Failure
+  * etc
+* Called binary, Bernoulli or 0/1 outcomes 
+* Collection of exchangeable binary outcomes for the same covariate data are called binomial outcomes.
+
+---
+
+## Example Baltimore Ravens win/loss
+### Ravens Data
+
+```{r loadRavens,cache=TRUE}
+download.file("https://dl.dropboxusercontent.com/u/7710864/data/ravensData.rda"
+              , destfile="./data/ravensData.rda",method="curl")
+load("./data/ravensData.rda")
+head(ravensData)
+```
+
+---
+
+## Linear regression
+
+$$ RW_i = b_0 + b_1 RS_i + e_i $$
+
+$RW_i$ - 1 if a Ravens win, 0 if not
+
+$RS_i$ - Number of points Ravens scored
+
+$b_0$ - probability of a Ravens win if they score 0 points
+
+$b_1$ - increase in probability of a Ravens win for each additional point
+
+$e_i$ - residual variation due 
+
+---
+
+## Linear regression in R
+
+```{r linearReg, dependson = "loadRavens", cache=TRUE}
+lmRavens <- lm(ravensData$ravenWinNum ~ ravensData$ravenScore)
+summary(lmRavens)$coef
+```
+---
+
+## Odds
+
+__Binary Outcome 0/1__
+
+$$RW_i$$  
+
+__Probability (0,1)__
+
+$$\rm{Pr}(RW_i | RS_i, b_0, b_1 )$$
+
+
+__Odds $(0,\infty)$__
+$$\frac{\rm{Pr}(RW_i | RS_i, b_0, b_1 )}{1-\rm{Pr}(RW_i | RS_i, b_0, b_1)}$$ 
+
+__Log odds $(-\infty,\infty)$__
+
+$$\log\left(\frac{\rm{Pr}(RW_i | RS_i, b_0, b_1 )}{1-\rm{Pr}(RW_i | RS_i, b_0, b_1)}\right)$$ 
+
+
+---
+
+## Linear vs. logistic regression
+
+__Linear__
+
+$$ RW_i = b_0 + b_1 RS_i + e_i $$
+
+or
+
+$$ E[RW_i | RS_i, b_0, b_1] = b_0 + b_1 RS_i$$
+
+__Logistic__
+
+$$ \rm{Pr}(RW_i | RS_i, b_0, b_1) = \frac{\exp(b_0 + b_1 RS_i)}{1 + \exp(b_0 + b_1 RS_i)}$$
+
+or
+
+$$ \log\left(\frac{\rm{Pr}(RW_i | RS_i, b_0, b_1 )}{1-\rm{Pr}(RW_i | RS_i, b_0, b_1)}\right) = b_0 + b_1 RS_i $$
+
+---
+
+## Interpreting Logistic Regression
+
+$$ \log\left(\frac{\rm{Pr}(RW_i | RS_i, b_0, b_1 )}{1-\rm{Pr}(RW_i | RS_i, b_0, b_1)}\right) = b_0 + b_1 RS_i $$
+
+
+$b_0$ - Log odds of a Ravens win if they score zero points
+
+$b_1$ - Log odds ratio of win probability for each point scored (compared to zero points)
+
+$\exp(b_1)$ - Odds ratio of win probability for each point scored (compared to zero points)
+
+---
+## Odds
+- Imagine that you are playing a game where you flip a coin with success probability $p$.
+- If it comes up heads, you win $X$. If it comes up tails, you lose $Y$.
+- What should we set $X$ and $Y$ for the game to be fair?
+
+    $$E[earnings]= X p - Y (1 - p) = 0$$
+- Implies
+    $$\frac{Y}{X} = \frac{p}{1 - p}$$    
+- The odds can be said as "How much should you be willing to pay for a $p$ probability of winning a dollar?"
+    - (If $p > 0.5$ you have to pay more if you lose than you get if you win.)
+    - (If $p < 0.5$ you have to pay less if you lose than you get if you win.)
+
+---
+## Visualizing fitting logistic regression curves
+```
+x <- seq(-10, 10, length = 1000)
+manipulate(
+    plot(x, exp(beta0 + beta1 * x) / (1 + exp(beta0 + beta1 * x)), 
+         type = "l", lwd = 3, frame = FALSE),
+    beta1 = slider(-2, 2, step = .1, initial = 2),
+    beta0 = slider(-2, 2, step = .1, initial = 0)
+    )
+```
+
+---
+
+## Ravens logistic regression
+
+```{r logReg, dependson = "loadRavens"}
+logRegRavens <- glm(ravensData$ravenWinNum ~ ravensData$ravenScore,family="binomial")
+summary(logRegRavens)
+```
+
+
+---
+
+## Ravens fitted values
+
+```{r dependson = "logReg",fig.height=4,fig.width=4}
+plot(ravensData$ravenScore,logRegRavens$fitted,pch=19,col="blue",xlab="Score",ylab="Prob Ravens Win")
+```
+
+
+---
+
+## Odds ratios and confidence intervals
+
+```{r dependson = "logReg",fig.height=4,fig.width=4}
+exp(logRegRavens$coeff)
+exp(confint(logRegRavens))
+```
+
+
+---
+
+## ANOVA for logistic regression
+
+```{r dependson = "logReg",fig.height=4,fig.width=4}
+anova(logRegRavens,test="Chisq")
+```
+
+
+
+---
+
+## Interpreting Odds Ratios
+
+* Not probabilities 
+* Odds ratio of 1 = no difference in odds
+* Log odds ratio of 0 = no difference in odds
+* Odds ratio < 0.5 or > 2 commonly a "moderate effect"
+* Relative risk $\frac{\rm{Pr}(RW_i | RS_i = 10)}{\rm{Pr}(RW_i | RS_i = 0)}$ often easier to interpret, harder to estimate
+* For small probabilities RR $\approx$ OR but __they are not the same__!
+
+[Wikipedia on Odds Ratio](http://en.wikipedia.org/wiki/Odds_ratio)
+
+
+---
+
+## Further resources
+
+* [Wikipedia on Logistic Regression](http://en.wikipedia.org/wiki/Logistic_regression)
+* [Logistic regression and glms in R](http://data.princeton.edu/R/glms.html)
+* Brian Caffo's lecture notes on: [Simpson's paradox](http://ocw.jhsph.edu/courses/MethodsInBiostatisticsII/PDFs/lecture23.pdf), [Case-control studies](http://ocw.jhsph.edu/courses/MethodsInBiostatisticsII/PDFs/lecture24.pdf)
+* [Open Intro Chapter on Logistic Regression](http://www.openintro.org/stat/down/oiStat2_08.pdf)
+
+# Lesson (15)
+
+
+## Key ideas
+
+* Many data take the form of counts
+  * Calls to a call center
+  * Number of flu cases in an area
+  * Number of cars that cross a bridge
+* Data may also be in the form of rates
+  * Percent of children passing a test
+  * Percent of hits to a website from a country
+* Linear regression with transformation is an option
+
+---
+
+## Poisson distribution
+- The Poisson distribution is a useful model for counts and rates
+- Here a rate is count per some monitoring time
+- Some examples uses of the Poisson distribution
+    - Modeling web traffic hits
+    - Incidence rates
+    - Approximating binomial probabilities with small $p$ and large $n$
+    - Analyzing contigency table data
+
+---
+## The Poisson mass function
+- $X \sim Poisson(t\lambda)$ if
+$$
+P(X = x) = \frac{(t\lambda)^x e^{-t\lambda}}{x!}
+$$
+For $x = 0, 1, \ldots$.
+- The mean of the Poisson is $E[X] = t\lambda$, thus $E[X / t] = \lambda$
+- The variance of the Poisson is $Var(X) = t\lambda$.
+- The Poisson tends to a normal as $t\lambda$ gets large.
+
+---
+
+```{r simPois,fig.height=4,fig.width=8, cache=TRUE}
+par(mfrow = c(1, 3))
+plot(0 : 10, dpois(0 : 10, lambda = 2), type = "h", frame = FALSE)
+plot(0 : 20, dpois(0 : 20, lambda = 10), type = "h", frame = FALSE)
+plot(0 : 200, dpois(0 : 200, lambda = 100), type = "h", frame = FALSE) 
+```
+
+---
+
+## Poisson distribution
+### Sort of, showing that the mean and variance are equal
+```{r}
+x <- 0 : 10000; lambda = 3
+mu <- sum(x * dpois(x, lambda = lambda))
+sigmasq <- sum((x - mu)^2 * dpois(x, lambda = lambda))
+c(mu, sigmasq)
+```
+
+---
+
+## Example: Leek Group Website Traffic
+* Consider the daily counts to Jeff Leek's web site
+
+[http://biostat.jhsph.edu/~jleek/](http://biostat.jhsph.edu/~jleek/)
+
+* Since the unit of time is always one day, set $t = 1$ and then
+the Poisson mean is interpretted as web hits per day. (If we set $t = 24$, it would
+be web hits per hour).
+
+---
+
+## Website data
+
+```{r leekLoad,cache=TRUE}
+download.file("https://dl.dropboxusercontent.com/u/7710864/data/gaData.rda",destfile="./data/gaData.rda",method="curl")
+load("./data/gaData.rda")
+gaData$julian <- julian(gaData$date)
+head(gaData)
+```
+
+[http://skardhamar.github.com/rga/](http://skardhamar.github.com/rga/)
+
+
+---
+
+## Plot data
+
+```{r, dependson="leekLoad",fig.height=4.5,fig.width=4.5}
+plot(gaData$julian,gaData$visits,pch=19,col="darkgrey",xlab="Julian",ylab="Visits")
+```
+
+
+---
+
+## Linear regression
+
+$$ NH_i = b_0 + b_1 JD_i + e_i $$
+
+$NH_i$ - number of hits to the website
+
+$JD_i$ - day of the year (Julian day)
+
+$b_0$ - number of hits on Julian day 0 (1970-01-01)
+
+$b_1$ - increase in number of hits per unit day
+
+$e_i$ - variation due to everything we didn't measure
+
+
+---
+
+## Linear regression line
+
+```{r linReg, dependson="leekLoad",fig.height=4,fig.width=4, cache=TRUE}
+plot(gaData$julian,gaData$visits,pch=19,col="darkgrey",xlab="Julian",ylab="Visits")
+lm1 <- lm(gaData$visits ~ gaData$julian)
+abline(lm1,col="red",lwd=3)
+```
+---
+
+## Aside, taking the log of the outcome
+- Taking the natural log of the outcome has a specific interpretation.
+- Consider the model
+
+$$ \log(NH_i) = b_0 + b_1 JD_i + e_i $$
+
+$NH_i$ - number of hits to the website
+
+$JD_i$ - day of the year (Julian day)
+
+$b_0$ - log number of hits on Julian day 0 (1970-01-01)
+
+$b_1$ - increase in log number of hits per unit day
+
+$e_i$ - variation due to everything we didn't measure
+
+---
+## Exponentiating coefficients
+- $e^{E[\log(Y)]}$ geometric mean of $Y$. 
+    - With no covariates, this is estimated by $e^{\frac{1}{n}\sum_{i=1}^n \log(y_i)} = (\prod_{i=1}^n y_i)^{1/n}$
+- When you take the natural log of outcomes and fit a regression model, your exponentiated coefficients
+estimate things about geometric means.
+- $e^{\beta_0}$ estimated geometric mean hits on day 0
+- $e^{\beta_1}$ estimated relative increase or decrease in geometric mean hits per day
+- There's a problem with logs with you have zero counts, adding a constant works
+```{r}
+round(exp(coef(lm(I(log(gaData$visits + 1)) ~ gaData$julian))), 5)
+```
+
+---
+
+## Linear vs. Poisson regression
+
+__Linear__
+
+$$ NH_i = b_0 + b_1 JD_i + e_i $$
+
+or
+
+$$ E[NH_i | JD_i, b_0, b_1] = b_0 + b_1 JD_i$$
+
+__Poisson/log-linear__
+
+$$ \log\left(E[NH_i | JD_i, b_0, b_1]\right) = b_0 + b_1 JD_i $$
+
+or
+
+$$ E[NH_i | JD_i, b_0, b_1] = \exp\left(b_0 + b_1 JD_i\right) $$
+
+
+---
+
+## Multiplicative differences
+
+<br><br>
+$$ E[NH_i | JD_i, b_0, b_1] = \exp\left(b_0 + b_1 JD_i\right) $$
+
+<br><br>
+
+$$ E[NH_i | JD_i, b_0, b_1] = \exp\left(b_0 \right)\exp\left(b_1 JD_i\right) $$
+
+<br><br>
+
+If $JD_i$ is increased by one unit, $E[NH_i | JD_i, b_0, b_1]$ is multiplied by $\exp\left(b_1\right)$
+
+---
+
+## Poisson regression in R
+
+```{r poisReg, dependson="linReg",fig.height=4.5,fig.width=4.5, cache=TRUE}
+plot(gaData$julian,gaData$visits,pch=19,col="darkgrey",xlab="Julian",ylab="Visits")
+glm1 <- glm(gaData$visits ~ gaData$julian,family="poisson")
+abline(lm1,col="red",lwd=3); lines(gaData$julian,glm1$fitted,col="blue",lwd=3)
+```
+
+
+---
+
+## Mean-variance relationship?
+
+```{r, dependson="poisReg",fig.height=4.5,fig.width=4.5}
+plot(glm1$fitted,glm1$residuals,pch=19,col="grey",ylab="Residuals",xlab="Fitted")
+```
+
+---
+
+## Model agnostic standard errors 
+
+```{r agnostic}
+library(sandwich)
+confint.agnostic <- function (object, parm, level = 0.95, ...)
+{
+    cf <- coef(object); pnames <- names(cf)
+    if (missing(parm))
+        parm <- pnames
+    else if (is.numeric(parm))
+        parm <- pnames[parm]
+    a <- (1 - level)/2; a <- c(a, 1 - a)
+    pct <- stats:::format.perc(a, 3)
+    fac <- qnorm(a)
+    ci <- array(NA, dim = c(length(parm), 2L), dimnames = list(parm,
+                                                               pct))
+    ses <- sqrt(diag(sandwich::vcovHC(object)))[parm]
+    ci[] <- cf[parm] + ses %o% fac
+    ci
+}
+```
+[http://stackoverflow.com/questions/3817182/vcovhc-and-confidence-interval](http://stackoverflow.com/questions/3817182/vcovhc-and-confidence-interval)
+
+---
+
+## Estimating confidence intervals
+
+```{r}
+confint(glm1)
+confint.agnostic(glm1)
+```
+
+
+---
+
+## Rates 
+
+
+<br><br>
+
+
+$$ E[NHSS_i | JD_i, b_0, b_1]/NH_i = \exp\left(b_0 + b_1 JD_i\right) $$
+
+<br><br>
+
+$$ \log\left(E[NHSS_i | JD_i, b_0, b_1]\right) - \log(NH_i)  =  b_0 + b_1 JD_i $$
+
+<br><br>
+
+$$ \log\left(E[NHSS_i | JD_i, b_0, b_1]\right) = \log(NH_i) + b_0 + b_1 JD_i $$
+
+---
+
+## Fitting rates in R 
+
+```{r ratesFit,dependson="agnostic", cache=TRUE,fig.height=4,fig.width=4}
+glm2 <- glm(gaData$simplystats ~ julian(gaData$date),offset=log(visits+1),
+            family="poisson",data=gaData)
+plot(julian(gaData$date),glm2$fitted,col="blue",pch=19,xlab="Date",ylab="Fitted Counts")
+points(julian(gaData$date),glm1$fitted,col="red",pch=19)
+```
+
+---
+
+## Fitting rates in R 
+
+```{r,dependson="ratesFit",fig.height=4,fig.width=4}
+glm2 <- glm(gaData$simplystats ~ julian(gaData$date),offset=log(visits+1),
+            family="poisson",data=gaData)
+plot(julian(gaData$date),gaData$simplystats/(gaData$visits+1),col="grey",xlab="Date",
+     ylab="Fitted Rates",pch=19)
+lines(julian(gaData$date),glm2$fitted/(gaData$visits+1),col="blue",lwd=3)
+```
+
+---
+
+## More information
+
+* [Log-linear models and multiway tables](http://ww2.coastal.edu/kingw/statistics/R-tutorials/loglin.html)
+* [Wikipedia on Poisson regression](http://en.wikipedia.org/wiki/Poisson_regression), [Wikipedia on overdispersion](http://en.wikipedia.org/wiki/Overdispersion)
+* [Regression models for count data in R](http://cran.r-project.org/web/packages/pscl/vignettes/countreg.pdf)
+* [pscl package](http://cran.r-project.org/web/packages/pscl/index.html) - the function _zeroinfl_ fits zero inflated models. 
+
+# Lesson (17)
+
+## How to fit functions using linear models
+* Consider a model $Y_i = f(X_i) + \epsilon$. 
+* How can we fit such a model using linear models (called scatterplot smoothing)
+* Consider the model 
+  $$
+  Y_i = \beta_0 + \beta_1 X_i + \sum_{k=1}^d (x_i - \xi_k)_+ \gamma_k + \epsilon_{i}
+  $$
+where $(a)_+ = a$ if $a > 0$ and $0$ otherwise and $\xi_1 \leq ... \leq \xi_d$ are known knot points.
+* Prove to yourelf that the mean function
+$$
+\beta_0 + \beta_1 X_i + \sum_{k=1}^d (x_i - \xi_k)_+ \gamma_k
+$$
+is continuous at the knot points.
+
+---
+## Simulated example
+```{r, fig.height=4, fig.width=4}
+n <- 500; x <- seq(0, 4 * pi, length = n); y <- sin(x) + rnorm(n, sd = .3)
+knots <- seq(0, 8 * pi, length = 20); 
+splineTerms <- sapply(knots, function(knot) (x > knot) * (x - knot))
+xMat <- cbind(1, x, splineTerms)
+yhat <- predict(lm(y ~ xMat - 1))
+plot(x, y, frame = FALSE, pch = 21, bg = "lightblue", cex = 2)
+lines(x, yhat, col = "red", lwd = 2)
+```
+
+---
+## Adding squared terms
+* Adding squared terms makes it continuously differentiable at the knot points.
+* Adding cubic terms makes it twice continuously differentiable at the knot points; etcetera.
+$$
+  Y_i = \beta_0 + \beta_1 X_i + \beta_2 X_i^2 + \sum_{k=1}^d (x_i - \xi_k)_+^2 \gamma_k + \epsilon_{i}
+$$
+
+---
+```{r, fig.height=4, fig.width=4}  
+splineTerms <- sapply(knots, function(knot) (x > knot) * (x - knot)^2)
+xMat <- cbind(1, x, x^2, splineTerms)
+yhat <- predict(lm(y ~ xMat - 1))
+plot(x, y, frame = FALSE, pch = 21, bg = "lightblue", cex = 2)
+lines(x, yhat, col = "red", lwd = 2)
+```
+
+---
+## Notes
+* The collection of regressors is called a basis.
+  * People have spent **a lot** of time thinking about bases for this kind of problem. So, consider this as just a teaser.
+* Single knot point terms can fit hockey stick like processes.
+* These bases can be used in GLMs as well.
+* An issue with these approaches is the large number of parameters introduced. 
+  * Requires some method of so called regularization.
+
+---
+## Harmonics using linear models
+```{r}
+##Chord finder, playing the white keys on a piano from octave c4 - c5
+notes4 <- c(261.63, 293.66, 329.63, 349.23, 392.00, 440.00, 493.88, 523.25)
+t <- seq(0, 2, by = .001); n <- length(t)
+c4 <- sin(2 * pi * notes4[1] * t); e4 <- sin(2 * pi * notes4[3] * t); 
+g4 <- sin(2 * pi * notes4[5] * t)
+chord <- c4 + e4 + g4 + rnorm(n, 0, 0.3)
+x <- sapply(notes4, function(freq) sin(2 * pi * freq * t))
+fit <- lm(chord ~ x - 1)
+```
+
+---
+```{r, fig.height=5,fig.width=5, echo=FALSE}
+plot(c(0, 9), c(0, 1.5), xlab = "Note", ylab = "Coef^2", axes = FALSE, frame = TRUE, type = "n")
+axis(2)
+axis(1, at = 1 : 8, labels = c("c4", "d4", "e4", "f4", "g4", "a4", "b4", "c5"))
+for (i in 1 : 8) abline(v = i, lwd = 3, col = grey(.8))
+lines(c(0, 1 : 8, 9), c(0, coef(fit)^2, 0), type = "l", lwd = 3, col = "red")
+```
+
+---
+```{r, fig.height=5, fig.wdith=5}
+##(How you would really do it)
+a <- fft(chord); plot(Re(a)^2, type = "l")
+```
