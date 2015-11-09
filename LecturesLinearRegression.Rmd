@@ -1,13 +1,8 @@
-# Lesson (1)
-
+# Lesson (1) Introduction to Linear Regression
 
 ## A famous motivating example
 
-<img class=center src=fig/galton.jpg height=150>
-
 ### (Perhaps surprisingly, this example is still relevant)
-
-<img class=center src=fig/height.png height=150>
 
 [http://www.nature.com/ejhg/journal/v17/n8/full/ejhg20095a.html](http://www.nature.com/ejhg/journal/v17/n8/full/ejhg20095a.html)
 
@@ -19,7 +14,7 @@
 Rafael Irizarry, who wrote this post, link on the image)
 
 <a href="http://simplystatistics.org/2013/01/28/data-supports-claim-that-if-kobe-stops-ball-hogging-the-lakers-will-win-more/">
-<img class=center src=http://simplystatistics.org/wp-content/uploads/2013/01/kobelakers1-1024x1024.png height=250></img>
+kobw
 </a>
 
 - "Data supports claim that if Kobe stops ball hogging the Lakers will win more"
@@ -203,8 +198,7 @@ g <- g + geom_abline(intercept = coef(lm1)[1], slope = coef(lm1)[2], size = 3, c
 g
 ```
 
-# Lesson (2)
-
+# Lesson (2) Basic Least Squares
 
 ## Some basic definitions
 
@@ -292,7 +286,7 @@ for the $X$ observations and $Y$ observations, respectively.
 * $Cor(X, Y)$ measures the strength of the linear relationship between the $X$ and $Y$ data, with stronger relationships as $Cor(X,Y)$ heads towards -1 or 1.
 * $Cor(X, Y) = 0$ implies no linear relationship. 
 
-# Lesson (3)
+# Lesson (3) Techincal Details
 
 
 ## General least squares for linear equations
@@ -387,7 +381,7 @@ g <- g + geom_smooth(method="lm", formula=y~x)
 g
 ```
 
-# Lesson (4)
+# Lesson (4) Introductory Data Example
 
 
 ## A historically famous idea, Regression to the Mean
@@ -415,9 +409,6 @@ g
 * Notice if $X$ is the outcome and you create a plot where $X$ is the horizontal axis, the slope of the least squares line that you plot is $1/Cor(Y, X)$. 
 
 ---
-<<<<<<< HEAD
-```{r, fig.height=6,fig.width=6,echo=FALSE}
-=======
 ## Plot of the results
 ```{r, fig.height=6,fig.width=6,echo=FALSE, fig.align='center'}
 >>>>>>> 3e5b14bbb8f101fc2a8573beb037d5f1b6f6fe47
@@ -462,7 +453,7 @@ g
 * If the correlation is 1 there is no regression to the mean (if father's height perfectly determine's child's height and vice versa)
 * Note, regression to the mean has been thought about quite a bit and generalized 
 
-# Lesson (5)
+# Lesson (5) Notation and Background
 
 ## Basic regression model with additive Gaussian errors.
 * Least squares is an estimation tool, how do we do inference?
@@ -617,7 +608,7 @@ lines(c(0.34, 0.34, 0.12),
 text(newx, rep(250, 3), labels = newx, pos = 2)
 ```
 
-# Lesson (6)
+# Lesson (6) Linear Least Squares
 
 ## Motivating example
 ### `diamond` data set from `UsingR` 
@@ -910,7 +901,7 @@ $$
 So, $R^2$ is literally $r$ squared.
 
 
-# Lesson (7)
+# Lesson (7) Linear Least Squares Coding Example
 
 ## Recall our model and fitted values
 * Consider the model
@@ -1041,7 +1032,7 @@ g
 
 # Week 2
 
-# Lesson (8)
+# Lesson (8)  Techincal Details
 
 ## Multivariable regression analyses
 * If I were to present evidence of a relationship between 
@@ -1178,7 +1169,7 @@ follows a $T$ distribution with $n-p$ degrees of freedom.
   * Uncover complex multivariate relationships with the response.
   * Build accurate prediction models.
 
-# Lesson (9)
+# Lesson (9) Regression to the mean
 
 ## Data set for discussion
 ### `require(datasets); data(swiss); ?swiss`
@@ -1443,8 +1434,9 @@ g1
 ```{r, echo = TRUE}
 summary(lm(Fertility ~ Agriculture + Agriculture : factor(CatholicBin), data = swiss))$coef
 ```
+# Week 2
 
-# Lesson (10)
+# Lesson (10) Statistical Linear Regression Models
 
 ## Consider the following simulated data
 Code for the first plot, rest omitted
@@ -1652,7 +1644,7 @@ impact of variables on associations.
   * Ascertaining mechanisms or cause are difficult subjects
     to be added on top of difficulty in understanding multivariate associations.
 
-# Lesson (11)
+# Lesson (11) Interpretting Coefficients
 
 ## The linear model
 * Specified as $Y_i =  \sum_{k=1}^p X_{ik} \beta_j + \epsilon_{i}$
@@ -1786,7 +1778,7 @@ data(swiss); par(mfrow = c(2, 2))
 fit <- lm(Fertility ~ . , data = swiss); plot(fit)
 ```
 
-# Lesson (12)
+# Lesson (12) Linear Regression for Prediction
 
 ## Multivariable regression
 * We have an entire class on prediction and machine learning, so we'll focus on modeling.
@@ -1934,7 +1926,7 @@ fit5 <- update(fit, Fertility ~ Agriculture + Examination + Education + Catholic
 anova(fit1, fit3, fit5)
 ```
 
-# Lesson (13)
+# Lesson (13) Residuals
 
 ## Linear models
 * Linear models are the most useful applied statistical technique. However, they are not without their limitations.
@@ -2046,7 +2038,7 @@ or the change in the link function of the expected response per unit change in $
 * Asymptotics are used for inference usually. 
 * Many of the ideas from linear models can be brought over to GLMs.
 
-# Lesson (14)
+# Lesson (14) Residuals Coding Example
 
 
 ## Key ideas
@@ -2236,8 +2228,7 @@ anova(logRegRavens,test="Chisq")
 * Brian Caffo's lecture notes on: [Simpson's paradox](http://ocw.jhsph.edu/courses/MethodsInBiostatisticsII/PDFs/lecture23.pdf), [Case-control studies](http://ocw.jhsph.edu/courses/MethodsInBiostatisticsII/PDFs/lecture24.pdf)
 * [Open Intro Chapter on Logistic Regression](http://www.openintro.org/stat/down/oiStat2_08.pdf)
 
-# Lesson (15)
-
+# Lesson (15) Residual Variance
 
 ## Key ideas
 
@@ -2523,7 +2514,7 @@ lines(julian(gaData$date),glm2$fitted/(gaData$visits+1),col="blue",lwd=3)
 * [Regression models for count data in R](http://cran.r-project.org/web/packages/pscl/vignettes/countreg.pdf)
 * [pscl package](http://cran.r-project.org/web/packages/pscl/index.html) - the function _zeroinfl_ fits zero inflated models. 
 
-# Lesson (17)
+# Lesson (17) Inference in Regression
 
 ## How to fit functions using linear models
 * Consider a model $Y_i = f(X_i) + \epsilon$. 
