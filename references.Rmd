@@ -1,0 +1,266 @@
+#
+
+## Quick Reference
+
+* [http://en.wikipedia.org/wiki/Timeline_of_algorithms](Timeline of algorithms - Wikipedia, the free encyclopedia)
+* [http://betterexplained.com/cheatsheet/](BetterExplained - Quick Reference Guide)
+* [http://cran.r-project.org/doc/contrib/Short-refcard.pdf](Short-refcard.pdf)
+* [http://datasciencespecialization.github.io/rprog/](R Programming)
+
+## Data Sets
+
+* [http://www.sailor.lib.md.us/services/databases/Default.aspx?id=56082](Research Databases - Services : SAILOR)
+* [http://db.sailor.lib.md.us/db/ebsco/sch](Science Reference Center : SAILOR)
+* [https://www.blockspring.com/?template_id=83](BlockSpring)
+* [https://www.youtube.com/playlist?list=PLvxOuBpazmsNo893xlpXNfMzVpRBjDH67](Hypothesis Testing - YouTube)
+* [https://data.baltimorecity.gov/](Baltimore | Open Data)
+
+## IPython Notebook
+
+* [http://continuum.io/blog/tags/IPython%20Notebook](IPython Notebook)
+* [https://github.com/ipython/ipython/wiki/A-gallery-of-interesting-IPython-Notebooks](ipython gallery)
+* [https://github.com/rgbkrk/ipython-notebook-cookbook](rgbkrk/ipython-notebook-cookbook)
+* [https://github.com/ipython/ipython/wiki/A-gallery-of-interesting-IPython-Notebooks#economics](A gallery of interesting IPython Notebooks · ipython/ipython Wiki · GitHub)
+* [http://ipython.org/ipython-doc/1/interactive/notebook.html#htmlnotebook](The IPython Notebook — IPython 1.2.1: An Afternoon Hack documentation)
+* [https://github.com/blog/1995-github-jupyter-notebooks-3](GitHub + Jupyter Notebooks = &lt;3)
+* [https://github.com/addfor/tutorials](addfor/tutorials)
+* [https://github.com/jseabold/depy/blob/master/pandas_sklearn_rendered.ipynb](depy/pandas_sklearn_rendered.ipynb at master · jseabold/depy)
+* [http://192.168.1.14:9999/notebooks/Stock_Trend/ExtractorStocks.ipynb](ExtractorStocks)
+
+## Projects
+
+* [http://nbviewer.ipython.org/url/norvig.com/ipython/Cheryl.ipynb](http://nbviewer.ipython.org/url/norvig.com/ipython/Cheryl.ipynb)
+* [https://cran.r-project.org/web/packages/knitr/vignettes/knitr-refcard.pdf](https://cran.r-project.org/web/packages/knitr/vignettes/knitr-refcard.pdf)
+* [https://rstudio-pubs-static.s3.amazonaws.com/26677_2496fad5277940beb2e3e8990729f67d.html](Automatic versus Manual Transmission Analysis in mtcars dataset)
+* [http://rstudio-pubs-static.s3.amazonaws.com/56345_1eaac16e96634033b1d10b135a40ab39.html](Automatic versus Manual Transmissions: Mtcars Dataset Analysis)
+
+### Capstone
+
+* [https://rpubs.com/Madhusri/94218](RPubs - Data_Science_Capstone_Project)
+* [https://rpubs.com/quandram/dscapstone](RPubs - Data Science Capstone SwiftKey - Intermediate Report)
+* [https://rpubs.com/llmercury/MilestonofDSCapstone](RPubs - Milestone Report - Data Science Capstone)
+
+### Linear Regression
+
+* [https://s3.amazonaws.com/coursera-uploads/user-e9a793b6ddd93dd7f6dd59f6/975183/asst-4/a21a7d30656711e58b079d8c4735c0c5.pdf](https://s3.amazonaws.com/coursera-uploads/user-e9a793b6ddd93dd7f6dd59f6/975183/asst-4/a21a7d30656711e58b079d8c4735c0c5.pdf)
+* [https://s3.amazonaws.com/coursera-uploads/user-158f3d5617716b8cbb0cec96/975183/asst-4/6ec7fa90656511e5b9e6e76ed428288e.pdf](https://s3.amazonaws.com/coursera-uploads/user-158f3d5617716b8cbb0cec96/975183/asst-4/6ec7fa90656511e5b9e6e76ed428288e.pdf)
+* [https://s3.amazonaws.com/coursera-uploads/user-ea38d6280e11e24a888df50e/975183/asst-4/90f17570655f11e5930e37f2d9dab095.pdf](https://s3.amazonaws.com/coursera-uploads/user-ea38d6280e11e24a888df50e/975183/asst-4/90f17570655f11e5930e37f2d9dab095.pdf)
+* [https://s3.amazonaws.com/coursera-uploads/user-09fa0f457b4fc7f0d43497e5/975183/asst-4/a36446d0655d11e5bec5d94909633c37.pdf](https://s3.amazonaws.com/coursera-uploads/user-09fa0f457b4fc7f0d43497e5/975183/asst-4/a36446d0655d11e5bec5d94909633c37.pdf)
+
+### Data Analysis
+
+* [http://rpubs.com/rarmknecht/healthandecon](RPubs - Health and Economic Impact of Severe Weather in the US 1950 - 2011)
+* [https://rpubs.com/luyit/80836](RPubs - analysis on NOAA data)
+* [https://rpubs.com/romportl/rr-project2](RPubs - NOAA Storm Event Types with Highest Health- and Economy-Harming Effects)
+* [https://rpubs.com/mcuquet/94205](RPubs - Impact of Storms to US Population and Ecomony)
+* [http://blog.treasuredata.com/blog/2015/03/06/4-important-things-about-analyzing-data-obvious-results/](The 4 Important Things about Analyzing Data Part 1: The Importance of Providing Many ‘Obvious’ Results | Treasure Data Blog)
+
+## Source Code Repositories
+
+* [http://colah.github.io/posts/2014-03-NN-Manifolds-Topology/](Neural Networks, Manifolds, and Topology -- colah&#39;s blog)
+
+## Linear Regression
+
+* [https://github.com/sefakilic/coursera-regmods/blob/master/cars.Rmd](coursera-regmods/cars.Rmd at master · sefakilic/coursera-regmods)
+* [https://www.rstudio.com/wp-content/uploads/2015/03/rmarkdown-reference.pdf](https://www.rstudio.com/wp-content/uploads/2015/03/rmarkdown-reference.pdf)
+* [http://bxhorn.com/2013/correlation-plots/](Correlation Plots in R | New Energy Research)
+* [http://www.rpubs.com/martisak/29890](RPubs - Regression Models Course Project - Automatic Versus Manual Transmission)
+* [https://rstudio-pubs-static.s3.amazonaws.com/77043_61f42ce24db046f48918693b12b9024d.html](Going The Distance: Manual or Automatic?)
+* [http://stackoverflow.com/questions/21716567/use-ggpairs-to-create-this-plot](r - use ggpairs to create this plot - Stack Overflow)
+* [http://treycausey.com/data_science_interviews.html](Trey Causey – What it&#39;s like to be on the data science job market)
+* [http://blog.revolutionanalytics.com/2015/09/how-do-you-know-if-your-model-is-going-to-work-part-4-cross-validation-techniques-1.html](How do you know if your model is going to work? Part 4: Cross-validation techniques)
+* [https://medium.com/rants-on-machine-learning/the-unreasonable-effectiveness-of-random-forests-f33c3ce28883](The Unreasonable Effectiveness of Random Forests — Rants on Machine Learning — Medium)
+* [http://www.datascienceglossary.org/](data science glossary)
+* [https://www.dataquest.io/mission/123/introduction-to-spark/](Mission 123 - Dataquest)
+* [https://districtdatalabs.silvrback.com/time-maps-visualizing-discrete-events-across-many-timescales](District Data Labs - Time Maps: Visualizing Discrete Events Across Many Timescales)
+* [https://github.com/rhiever/Data-Analysis-and-Machine-Learning-Projects/blob/master/example-data-science-notebook/Example%20Machine%20Learning%20Notebook.ipynb](Data-Analysis-and-Machine-Learning-Projects/Example Machine Learning Notebook.ipynb at master · rhiever/Data-Analysis-and-Machine-Learning-Projects)
+* [https://www.youtube.com/watch?v=dQNpSa-bq4M&list=PLIeGtxpvyG-IqjoU8IiF0Yu1WtxNq_4z-](Statistics 101: Multiple Regression,Part 1, The Very Basics - YouTube)
+* [https://adcalves.wordpress.com/2014/04/17/demystifying-linear-regressions-as-a-tool-for-inference/](Demystifying Linear Regressions as a Tool for Inference | A World of Events)
+* [http://www.pitt.edu/~njc23/Lecture10.pdf](www.pitt.edu/~njc23/Lecture10.pdf)
+* [http://people.stat.sfu.ca/~cschwarz/Stat-650/Notes/PDFbigbook-R/R-part018.pdf](people.stat.sfu.ca/~cschwarz/Stat-650/Notes/PDFbigbook-R/R-part018.pdf)
+* [https://www.cscu.cornell.edu/news/statnews/Stnews73insert.pdf](https://www.cscu.cornell.edu/news/statnews/Stnews73insert.pdf)
+* [https://github.com/bcaffo/regmodsbook](bcaffo/regmodsbook)
+
+### Linear Regression
+
+* [https://www.youtube.com/playlist?list=PLpl-gQkQivXhk6qSyiNj51qamjAtZISJ-](Math Biostat Boot Camp 1 - YouTube)
+* [http://imai.princeton.edu/teaching/files/basics.pdf](imai.princeton.edu/teaching/files/basics.pdf)
+* [http://www.statpower.net/Content/310/A%20Basic%20Introduction%20to%20Statistical%20Inference.pdf](www.statpower.net/Content/310/A Basic Introduction to Statistical Inference.pdf)
+* [https://www.coursera.org/course/biostats](Mathematical Biostatistics Boot Camp 1 - Johns Hopkins University | Coursera)
+* [http://www.cyclismo.org/tutorial/R/probability.html#the-normal-distribution](4. Basic Probability Distributions — R Tutorial)
+* [https://www.coursera.org/course/statistics](Data Analysis and Statistical Inference - Duke University | Coursera)
+* [https://www.youtube.com/playlist?list=PL9An6d7LSw1Xn7taMQQySsvgUzhuW6Ive](Biostatistics - Brian Caffo - YouTube)
+* [http://work.thaslwanter.at/Stats/html/#bayesian-statistics](Preface — Introduction to Statistics 6.3 documentation)
+* [http://people.duke.edu/~ccc14/sta-663/index.html](Computational Statistics in Python — Computational Statistics in Python 0.1 documentation)
+* [http://www.rapidtables.com/math/probability/distribution.htm](Probability distribution in statistics)
+* [http://en.wikipedia.org/wiki/Bayesian_statistics](Bayesian statistics - Wikipedia, the free encyclopedia)
+* [http://www4.ncsu.edu/~swu6/documents/A-probability-and-statistics-cheatsheet.pdf](www4.ncsu.edu/~swu6/documents/A-probability-and-statistics-cheatsheet.pdf)
+* [https://class.coursera.org/statinference-031/forum/thread?thread_id=116](Difference between Xbar and Phat)
+* [https://cran.r-project.org/doc/contrib/Faraway-PRA.pdf](https://cran.r-project.org/doc/contrib/Faraway-PRA.pdf)
+* [https://cran.r-project.org/web/packages/IPSUR/vignettes/IPSUR.pdf](https://cran.r-project.org/web/packages/IPSUR/vignettes/IPSUR.pdf)
+* [https://s3.amazonaws.com/coursera-uploads/user-6290d78ef48f4852d4c59c03/975164/asst-4/d8107140496c11e5a20d1d673f699de0.pdf](https://s3.amazonaws.com/coursera-uploads/user-6290d78ef48f4852d4c59c03/975164/asst-4/d8107140496c11e5a20d1d673f699de0.pdf)
+* [https://s3.amazonaws.com/coursera-uploads/user-6290d78ef48f4852d4c59c03/975164/asst-4/f14ceb60498b11e58c00958cd4970560.pdf](https://s3.amazonaws.com/coursera-uploads/user-6290d78ef48f4852d4c59c03/975164/asst-4/f14ceb60498b11e58c00958cd4970560.pdf)
+* [http://chrisbeaumont.org/holdem_odds/#8H+QS](Texas Hold&#39;em Odds Visualization)
+* [http://sux13.github.io/DataScienceSpCourseNotes/](Data Science Specialization Course Notes by Xing Su)
+* [http://work.thaslwanter.at/Stats/html/statsModels.html#example-1-program-effectiveness](Model language — Introduction to Statistics 6.3 documentation)
+* [https://datasciencelab.wordpress.com/2013/12/12/clustering-with-k-means-in-python/](Clustering With K-Means in Python | The Data Science Lab)
+* [https://www.youtube.com/watch?v=-MKT3yLDkqk](https://www.youtube.com/watch?v=-MKT3yLDkqk)
+* [http://isites.harvard.edu/icb/icb.do?keyword=k101662&pageid=icb.page661018](CheatSheets § Statistics 104 )
+* [http://web.mit.edu/~csvoss/Public/usabo/stats_handout.pdf](web.mit.edu/~csvoss/Public/usabo/stats_handout.pdf)
+* [http://www-bcf.usc.edu/~gareth/ISL/ISLR%20Fourth%20Printing.pdf](www-bcf.usc.edu/~gareth/ISL/ISLR Fourth Printing.pdf)
+* [https://www.youtube.com/watch?v=uhxtUt_-GyM&list=PL1328115D3D8A2566&index=1](Statistics: The average | Descriptive statistics | Probability and Statistics | Khan Academy - YouTube)
+* [https://leanpub.com/LittleInferenceBook/read?utm_medium=email&utm_source=other&utm_campaign=notifications.auto.3BJahjnxEeWL3yIAC7NvDw](Read Statistical inference for data science | Leanpub)
+* [https://www.youtube.com/watch?v=oHcrna8Fk18&index=1&list=PLvxOuBpazmsNIHP5cz37oOPZx0JKyNszN](An Introduction to Discrete Random Variables and Discrete Probability Distributions - YouTube)
+* [http://www.rpubs.com/ray_jones/69849?utm_medium=email&utm_source=other&utm_campaign=notifications.auto.juxSHlMcEeWFBRJtZwwLqQ](RPubs - CLT_distributions)
+* [https://www.youtube.com/watch?v=b34mXkyCH0I&index=4&list=PLpl-gQkQivXjqHAJd2t-J_One_fYE55tC](01 01 part 4 of 4 Introductory Data Example - YouTube)
+* [http://www.cs.cornell.edu/jeh/book11April2014.pdf](book11April2014.pdf)
+* [https://www.youtube.com/watch?v=58ZPhK32sU8&index=1&list=PLpl-gQkQivXjqHAJd2t-J_One_fYE55tC](01 01 part 1 of 4 Introduction - YouTube)
+
+# Raw
+
+* [http://datasciencespecialization.github.io/](Data Science Specialization)
+* [https://github.com/DataScienceSpecialization/DataScienceSpecialization.github.io#contributing](DataScienceSpecialization/DataScienceSpecialization.github.io)
+
+
+## Tutorials
+
+* [http://web.stanford.edu/~hastie/local.ftp/Springer/OLD/ESLII_print4.pdf](web.stanford.edu/~hastie/local.ftp/Springer/OLD/ESLII_print4.pdf)
+* [https://github.com/Xiaodan/Coursera-Practical-Machine-Learning/blob/master/week1/quiz1.R](Coursera-Practical-Machine-Learning/quiz1.R at master · Xiaodan/Coursera-Practical-Machine-Learning)
+* [http://machinelearningmastery.com/](Machine Learning Mastery)
+* [http://www.gardenersown.co.uk/education/lectures/r/correl.htm](Using R for statistical analyses - Simple correlation)
+* [http://rstudio-pubs-static.s3.amazonaws.com/61484_184436ac5ea44c9e92ded1b68a634f46.html](Practical Machine Learning Final Project)
+* [http://topepo.github.io/caret/training.html](Model Training and Tuning)
+* [http://topepo.github.io/caret/modelList.html](TableID8cb065135d41)
+* [http://rstudio-pubs-static.s3.amazonaws.com/39319_f904e6a23be34fc486ab38de4f1b050d.html](Practical Machine Learning Course Project)
+* [https://rstudio-pubs-static.s3.amazonaws.com/29426_041c5ccb9a6a4bedb204e33144bb0ad4.html](Final Project Report - Practical Machine Learning Course)
+* [https://github.com/adason/ml_wle](adason/ml_wle)
+* [http://www.r-bloggers.com/h2o-domino-kaggle-quick-start-guide-and-rugsmaps2/](H2O, Domino &amp; Kaggle Quick-Start Guide and RUGSMAPS2 | R-bloggers)
+* [http://h2o.ai/product/](H2O.ai - Why H2O?)
+* [https://rstudio-pubs-static.s3.amazonaws.com/76246_235cb9369cb441cf85935ee75940405d.html](Machine Language Week 3)
+* [http://rstudio-pubs-static.s3.amazonaws.com/59750_bd5c851a0dd9481a90c861a3f7a6089f.html](Practical Machine Learning - Quiz 3)
+* [https://rstudio-pubs-static.s3.amazonaws.com/82587_67f957d432c048ff90ebd79969a05c05.html](Practical Machine Learning 14 - Quiz 3)
+* [https://www.kaggle.com/c/the-winton-stock-market-challenge/data](Data - The Winton Stock Market Challenge | Kaggle)
+* [https://github.com/chris-kwas/PracML](chris-kwas/PracML)
+* [http://www.stat.berkeley.edu/~breiman/RandomForests/cc_home.htm#ooberr](Random forests - classification description)
+* [https://github.com/chrisdaly/Data-Scientist-MOOC](chrisdaly/Data-Scientist-MOOC)
+* [https://rpubs.com/cheyu/pmlProject](RPubs - Practical Machine Learning Project)
+* [http://rpackages.ianhowson.com/cran/bartMachine/man/k_fold_cv.html](Estimate Out-of-sample Error with K-fold Cross validation | bartMachine)
+* [https://books.google.com/books?id=RQHB4_p3bJoC&pg=PA370&lpg=PA370&dq=%22cross+validation%22+%22out+of+sample+error%22+confusion+matrix&source=bl&ots=Rn3w2YJTaP&sig=-FSKMB3c1AtZg190b9pT-V6Z_Ck&hl=en&sa=X&ved=0CDUQ6AEwBGoVChMIld6f5L_vyAIVhtg-Ch2QwAmV#v=onepage&q=%22cross%20validation%22%20%22out%20of%20sample%20error%22%20confusion%20matrixcross&f=false](Principles and Theory for Data Mining and Machine Learning - Bertrand Clarke, Ernest Fokoue, Hao Helen Zhang - Google Books)
+* [http://finzi.psych.upenn.edu/library/bartMachine/html/k_fold_cv.html](R: Estimate Out-of-sample Error with K-fold Cross validation)
+* [https://books.google.com/books?id=8_rzBgAAQBAJ&pg=PA191&lpg=PA191&dq=%22cross+validation%22+%22out+of+sample+error%22+confusion+matrix&source=bl&ots=ahscFTJWnV&sig=RBSdSU64qN_X9Zmc7fR3Fzk-rC0&hl=en&sa=X&ved=0CEUQ6AEwB2oVChMIld6f5L_vyAIVhtg-Ch2QwAmV#v=onepage&q=%22cross%20validation%22%20%22out%20of%20sample%20error%22%20confusion%20matrix&f=false](Machine Learning in Python: Essential Techniques for Predictive Analysis - Michael Bowles - Google Books)
+
+### Classes
+
+* [https://class.coursera.org/compinvesting1-003/lecture/85](92_3 Versions of Efficient Markets Hypothesis)
+* [http://boost.dataquest.io/](Python for Business Analysts)
+* [http://en.wikipedia.org/wiki/Bloom_filter](Bloom filter - Wikipedia, the free encyclopedia)
+* [http://www.indiana.edu/~kruschke/AnOpenLetter.htm](An Open Letter)
+* [http://en.wikipedia.org/wiki/Category_theory](Category theory - Wikipedia, the free encyclopedia)
+* [http://en.wikipedia.org/wiki/R_(programming_language)](R programming language, Wikipedia)
+* [http://neuralnetworksanddeeplearning.com/chap4.html](Neural networks and deep learning)
+* [http://npbay.es/deep-learning-business-models.html](Deep Learning Business Models)
+* [https://enrol.dss.mil/courseware/resource_tool/default.htm?r=00173](Center for Development of Security Excellence, DSS, DoD)
+* [http://bartoszmilewski.com/2014/10/28/category-theory-for-programmers-the-preface/](Category Theory for Programmers: The Preface |   Bartosz Milewski&#39;s Programming Cafe)
+* [http://www.cs.cmu.edu/~tom/10701_sp11/slides/DTreesAndOverfitting-1-11-2011_final.pdf](DTreesAndOverfitting-1-11-2011_final.ppt - DTreesAndOverfitting-1-11-2011_final.pdf)
+* [https://www.coursera.org/specialization/jhudatascience/1?utm_medium=facebook&utm_campaign=DataScience&utm_source=bamboo&nan_pid=1817046475](Data Science - Specialization | Coursera)
+* [http://www.ibm.com/analytics/watson-analytics/](IBM Watson Analytics - Overview - United States)
+* [http://archive.ics.uci.edu/ml/datasets/Human+Activity+Recognition+Using+Smartphones](UCI Machine Learning Repository: Human Activity Recognition Using Smartphones Data Set)
+
+
+* [http://kom.aau.dk/project/sipcom/SIPCom06/semester7/FP7-5/prob-cheat-sheet.pdf](kom.aau.dk/project/sipcom/SIPCom06/semester7/FP7-5/prob-cheat-sheet.pdf)
+* [http://rstudio-pubs-static.s3.amazonaws.com/19452_2fd823509cb64054813867d90c02b34c.html](Practical Machine Learning Homework #2)
+* [https://www.dataquest.io/blog/installing-pyspark/](Dataquest Blog - Writings about data science, from the makers of Dataquest.io)
+* [https://github.com/hangtwenty/dive-into-machine-learning](hangtwenty/dive-into-machine-learning)
+* [http://blog.insightdatalabs.com/jupyter-on-apache-spark-step-by-step/](Using Jupyter on Apache Spark: Step-by-Step with a Terabyte of Reddit Data)
+* [http://blog.dominodatalab.com/lesser-known-ways-of-using-notebooks/](Advanced Jupyter Notebook Tricks — Part I)
+* [http://devblogs.nvidia.com/parallelforall/deep-learning-nutshell-core-concepts/](Deep Learning in a Nutshell: Core Concepts | Parallel Forall)
+* [http://www.dezyre.com/data-science-in-python/36](Data Science in Python Online Training, Python Data Scientist Course, Certification)
+* [http://blog.datadive.net/7-tools-in-every-data-scientists-toolbox/](7 tools in every data scientist’s toolbox | Diving into data)
+* [http://www.itshared.org/2015/10/data-science-interview-questions.html](IT Shared: Data Science Interview Questions)
+* [http://colah.github.io/posts/2015-09-Visual-Information/](Visual Information Theory -- colah&#39;s blog)
+* [https://jakevdp.github.io/blog/2015/10/17/analyzing-pronto-cycleshare-data-with-python-and-pandas/](Analyzing Pronto CycleShare Data with Python and Pandas)
+* [https://www.youtube.com/watch?v=Sv_gqUr5VK8](Domino for Data Science Teams - YouTube)
+
+
+* [http://www.r-bloggers.com/knitrs-best-hidden-gem-spin/](Knitr’s best hidden gem: spin | R-bloggers)
+* [https://support.rstudio.com/hc/en-us/articles/201057987-Quick-list-of-useful-R-packages](Quick list of useful R packages – RStudio Support)
+* [http://cybergamut.com/](cybergamut)
+* [https://golog.co/blog/article/Setting_up_Apache_Spark_and_IPython](https://golog.co/blog/article/Setting_up_Apache_Spark_and_IPython)
+* [https://www.dataquest.io/course/python-for-excel](Python For-excel Course - Dataquest)
+* [http://www.slate.com/articles/technology/future_tense/2013/09/four_scenarios_for_our_future_lifespans.html](Four scenarios for our future lifespans.)
+* [http://efytimes.com/e1/fullnews.asp?edid=121516](16 Free eBooks On Machine Learning!)
+
+
+## Innovation
+
+* [https://www.kaggle.com/c/diabetic-retinopathy-detection/data](Data - Diabetic Retinopathy Detection | Kaggle)
+* [https://www.kaggle.com/competitions](Competitions | Kaggle)
+* [http://lifehacker.com/use-your-coding-skills-to-help-solve-civic-problems-at-1721090273](Use Your Coding Skills to Help Solve Civic Problems at Code for America)
+* [https://quantiacs.com/Contest/FuturesContestRules.aspx](Quantiacs - Futures Contest Rules)
+* [https://inclass.kaggle.com/c/boston-data-festival-hackathon](Description - Boston Data Festival Hackathon | Kaggle in Class)
+   * [http://ebiquity.umbc.edu/blogger/2010/12/07/naive-bayes-classifier-in-50-lines/](Naive Bayes classifier in 50 lines)
+* [http://phys.org/news/2015-05-algorithm-size-mathematical-properties.html](Algorithm reduces size of data sets while preserving their mathematical properties)
+* [http://requestinfo.datascience.berkeley.edu/index3.html?s=search_brand_google&l=GGL|UCB-MIDS|Brand|Tier_0|Exact|Dom|Brand-Plus&ef_id=724605682_44341112079_0&gclid=CPGm1qP-r8ACFaVZ7AodliIAVw&siclientid=9787&sessguid=1da14094-83ab-43a7-8021-ea7250e39222&userguid=1da14094-83ab-43a7-8021-ea7250e39222&permguid=1da14094-83ab-43a7-8021-ea7250e39222](datascience@berkeley)
+* [http://d.hatena.ne.jp/teramonagi/20130412/1365767677](???????????????? - My Life as a Mock Quant)
+			
+			
+## Data Tau
+
+* [http://yanirseroussi.com/2015/10/02/the-wonderful-world-of-recommender-systems/](The wonderful world of recommender systems | Yanir Seroussi)
+* [https://blog.rjmetrics.com/2015/09/30/the-ultimate-guide-to-data-science-blogs-150-and-counting/](The Ultimate Guide to Data Science Blogs)
+* [https://www.oreilly.com/ideas/five-principles-for-applying-data-science-for-social-good](Five principles for applying data science for social good - O&#39;Reilly Media)
+* [http://insightdatalabs.com/](Insight Data Labs - Advanced Workshops for Data Scientists and Engineers)
+* [http://spacy.io/](SpaCy.io | Industrial-strength Natural Language Processing)
+* [https://www.mysliderule.com/workshops/dataschool](Data Science School | SlideRule)
+* [http://www.edwardtufte.com/tufte/](The Work of Edward Tufte and Graphics Press)
+* [http://blog.sense.io/start-learning-with-the-summer-of-data-science-sods/](Start Learning with the 2015 Summer of Data Science)
+* [http://simplystatistics.org/2015/03/17/data-science-done-well-looks-easy-and-that-is-a-big-problem-for-data-scientists/](Data science done well looks easy – and that is a big problem for data scientists | Simply Statistics)
+* [http://karpathy.github.io/2015/05/21/rnn-effectiveness/](The Unreasonable Effectiveness of Recurrent Neural Networks)
+* [http://www.slideshare.net/rxin/2015-0409-cs186guestlecture](Berkeley, Big Data Analytics Systems: What Goes …)
+* [http://joshualande.com/data-science-sql/](What Every Data Scientist Needs to Know about SQL · Joshua Lande)
+* [http://videolectures.net/sahd2014_lecun_deep_learning/](? The Unreasonable Effectivness Of Deep Learning - VideoLectures.NET)
+* [https://www.edx.org/course/introduction-big-data-apache-spark-uc-berkeleyx-cs100-1x](Introduction to Big Data with Apache Spark | edX)
+* [https://www.airpair.com/python/posts/top-mistakes-python-big-data-analytics](The Top Mistakes Developers Make When Using Python for Big Data Analytics)
+* [http://www.bitbootcamp.com/resources.html](Bitbootcamp BigData Hadoop Training)
+* [http://danielnee.com/?p=155](Common Pitfalls in Machine Learning | Daniel Nee)
+* [http://www.cs.cmu.edu/~tom/10701_sp11/](Machine Learning 10-701/15-781 Spring 2011)
+* [https://dataquest.io/](DataQuest -- learn data science in your browser, for free)
+* [http://zyxo.wordpress.com/2010/09/17/why-decision-trees-is-the-best-data-mining-algorithm/](Why decision trees is the best data mining algorithm « Mixotricha)
+* [https://drive.google.com/file/d/0B0o3KyGJ3UJ2NnBHN2tQUTZOTms/view](DataScienceBook1_1.pdf - Google Drive)
+* [https://www.cia.gov/library/center-for-the-study-of-intelligence/csi-publications/books-and-monographs/Thinking-and-Writing-Feb2010-web.pdf](Thinking and Writing: Cognitive Science and Intelligence Analysis - Thinking-and-Writing-Feb2010-web.pdf)
+* [http://insightdataengineering.com/blog/The-Data-Engineering-Ecosystem-An-Interactive-Map.html](The Data Engineering Ecosystem: An Interactive Map)
+* [https://www.youtube.com/watch?v=Gg_5fWllfgA](A platform for large-scale neuroscience - Jeremy Freeman - YouTube)
+* [http://www.cs.cornell.edu/jeh/book11April2014.pdf](book11April2014.pdf)
+* [http://www.cs.ucr.edu/~eamonn/meaningless.pdf](Microsoft Word - Keogh_KAIS_45.doc - meaningless.pdf)
+* [https://www.dataquest.io/mission/103](Mission 103 - Dataquest)
+* [https://www.edx.org/course/scalable-machine-learning-uc-berkeleyx-cs190-1x](Scalable Machine Learning | edX)
+* [https://www.edx.org/course/analytics-edge-mitx-15-071x-0](The Analytics Edge | edX)
+* [http://camdavidsonpilon.github.io/Probabilistic-Programming-and-Bayesian-Methods-for-Hackers/#contents](Bayesian Methods for Hackers)
+* [http://www.algomation.com/](Animated Algorithms)
+* [http://rayli.net/blog/data/top-10-data-mining-algorithms-in-plain-english/](Top 10 data mining algorithms in plain English | rayli.net)
+* [https://www.khanacademy.org/math/probability/descriptive-statistics/variance_std_deviation/v/sample-variance](khan variance)
+* [http://datascienceplus.com/data-manipulation-in-r-with-reshape2/](Data manipulation with reshape2 | DataScience+)
+* [https://www.dataquest.io/blog/python-vs-r/](Dataquest Blog - Writings about data science, from the makers of Dataquest.io)
+* [http://datascienceplus.com/write-for-us/](Write for DataScience+ | DataScience+)
+* [http://datascienceplus.com/building-interactive-web-apps-with-shiny/](Building interactive web apps with Shiny | DataScience+)
+* [http://blog.insightdatalabs.com/spark-cluster-step-by-step/](Spinning up an Apache Spark Cluster for under $1: Step-by-Step)
+* [http://www.dataperspective.info/2015/10/introduction-to-logistic-regression.html](Data Perspective: Introduction to Logistic Regression with R)
+* [https://blog.cloudflare.com/single-rx-queue-kernel-bypass-with-netmap/](Single RX queue kernel bypass in Netmap for high packet rate networking)
+* [http://blog.ethanrosenthal.com/2015/09/23/start-to-insight/](Yet Another PhD to Data Science Post, Part I · Data Piques)
+* [http://blog.ethanrosenthal.com/2015/10/06/interviews-to-job/](Yet Another PhD to Data Science Post, Part III · Data Piques)
+* [http://interactivepython.org/runestone/static/pythonds/index.html](Assignments — Problem Solving with Algorithms and Data Structures)
+* [https://leetcode.com/](LeetCode Online Judge)
+* [http://xyclade.github.io/MachineLearning/](Machine Learning for Developers by Mike de Waard)
+* [https://www.coursera.org/learn/machine-learning](Machine Learning - Stanford University | Coursera)
+* [http://efavdb.com/pandas-tips-and-tricks/](Getting started with Pandas | EFavDB)
+* [http://radar.oreilly.com/2015/09/building-enterprise-data-applications-with-open-source-components.html](Building enterprise data applications with open source components - O&#39;Reilly Radar)
+* [http://www.drivendata.org/competitions/8/](Competition: The Metis Challenge: Naive Bees Classifier)
+* [http://multithreaded.stitchfix.com/blog/2015/03/31/advice-for-data-scientists/](Advice for Data Scientists on Where to Work | Stitch Fix Technology – Multithreaded)
+* [https://www.dataquest.io/blog/interview-trey-causey/](Dataquest Blog - Writings about data science, from the makers of Dataquest.io)
+
+
+* [http://wesmckinney.com/files/20111017/notebook_output.pdf](IPy: FinanceDemo - notebook_output.pdf)
+* [http://nbviewer.ipython.org/url/jakevdp.github.com/downloads/notebooks/mpld3Demo.ipynb](http://nbviewer.ipython.org/url/jakevdp.github.com/downloads/notebooks/mpld3Demo.ipynb)
+* [http://nbviewer.ipython.org/gist/msund/7ac1203ded66fe8134cc](http://nbviewer.ipython.org/gist/msund/7ac1203ded66fe8134cc)
+* [https://datasciencelab.wordpress.com/2013/12/21/beautiful-plots-with-pandas-and-matplotlib/](Beautiful Plots With Pandas and Matplotlib | The Data Science Lab)
+* [http://www.slideshare.net/PyData/interactive-financial-analytics-with-python-i-python-dr-yves-hilpisch](Interactive Financial Analytics with Python &amp; Ipython by Dr Yves Hilp…)
