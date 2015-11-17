@@ -2,10 +2,11 @@
 
 ## Quick Reference
 
-* [http://en.wikipedia.org/wiki/Timeline_of_algorithms](Timeline of algorithms - Wikipedia, the free encyclopedia)
-* [http://betterexplained.com/cheatsheet/](BetterExplained - Quick Reference Guide)
-* [http://cran.r-project.org/doc/contrib/Short-refcard.pdf](Short-refcard.pdf)
+* [http://cran.r-project.org/doc/contrib/Short-refcard.pdf](R programming reference card)
 * [http://datasciencespecialization.github.io/rprog/](R Programming)
+* [http://en.wikipedia.org/wiki/Timeline_of_algorithms](Timeline of algorithms - Wikipedia, the free encyclopedia)
+* [http://betterexplained.com/cheatsheet/](Popular Math Insights - Quick Reference Guide)
+* [http://kom.aau.dk/project/sipcom/SIPCom06/semester7/FP7-5/prob-cheat-sheet.pdf](Probability)
 
 ## Data Sets
 
@@ -33,7 +34,8 @@
 * [https://cran.r-project.org/web/packages/knitr/vignettes/knitr-refcard.pdf](https://cran.r-project.org/web/packages/knitr/vignettes/knitr-refcard.pdf)
 * [https://rstudio-pubs-static.s3.amazonaws.com/26677_2496fad5277940beb2e3e8990729f67d.html](Automatic versus Manual Transmission Analysis in mtcars dataset)
 * [http://rstudio-pubs-static.s3.amazonaws.com/56345_1eaac16e96634033b1d10b135a40ab39.html](Automatic versus Manual Transmissions: Mtcars Dataset Analysis)
-
+* [http://www.rpubs.com/ray_jones/69849?utm_medium=email&utm_source=other&utm_campaign=notifications.auto.juxSHlMcEeWFBRJtZwwLqQ](RPubs - CLT_distributions)
+* 
 ### Capstone
 
 * [https://rpubs.com/Madhusri/94218](RPubs - Data_Science_Capstone_Project)
@@ -111,7 +113,7 @@
 * [https://www.youtube.com/watch?v=uhxtUt_-GyM&list=PL1328115D3D8A2566&index=1](Statistics: The average | Descriptive statistics | Probability and Statistics | Khan Academy - YouTube)
 * [https://leanpub.com/LittleInferenceBook/read?utm_medium=email&utm_source=other&utm_campaign=notifications.auto.3BJahjnxEeWL3yIAC7NvDw](Read Statistical inference for data science | Leanpub)
 * [https://www.youtube.com/watch?v=oHcrna8Fk18&index=1&list=PLvxOuBpazmsNIHP5cz37oOPZx0JKyNszN](An Introduction to Discrete Random Variables and Discrete Probability Distributions - YouTube)
-* [http://www.rpubs.com/ray_jones/69849?utm_medium=email&utm_source=other&utm_campaign=notifications.auto.juxSHlMcEeWFBRJtZwwLqQ](RPubs - CLT_distributions)
+
 * [https://www.youtube.com/watch?v=b34mXkyCH0I&index=4&list=PLpl-gQkQivXjqHAJd2t-J_One_fYE55tC](01 01 part 4 of 4 Introductory Data Example - YouTube)
 * [http://www.cs.cornell.edu/jeh/book11April2014.pdf](book11April2014.pdf)
 * [https://www.youtube.com/watch?v=58ZPhK32sU8&index=1&list=PLpl-gQkQivXjqHAJd2t-J_One_fYE55tC](01 01 part 1 of 4 Introduction - YouTube)
@@ -167,7 +169,6 @@
 * [http://archive.ics.uci.edu/ml/datasets/Human+Activity+Recognition+Using+Smartphones](UCI Machine Learning Repository: Human Activity Recognition Using Smartphones Data Set)
 
 
-* [http://kom.aau.dk/project/sipcom/SIPCom06/semester7/FP7-5/prob-cheat-sheet.pdf](kom.aau.dk/project/sipcom/SIPCom06/semester7/FP7-5/prob-cheat-sheet.pdf)
 * [http://rstudio-pubs-static.s3.amazonaws.com/19452_2fd823509cb64054813867d90c02b34c.html](Practical Machine Learning Homework #2)
 * [https://www.dataquest.io/blog/installing-pyspark/](Dataquest Blog - Writings about data science, from the makers of Dataquest.io)
 * [https://github.com/hangtwenty/dive-into-machine-learning](hangtwenty/dive-into-machine-learning)
