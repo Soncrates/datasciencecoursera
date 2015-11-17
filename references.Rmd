@@ -265,3 +265,9 @@
 * [http://nbviewer.ipython.org/gist/msund/7ac1203ded66fe8134cc](http://nbviewer.ipython.org/gist/msund/7ac1203ded66fe8134cc)
 * [https://datasciencelab.wordpress.com/2013/12/21/beautiful-plots-with-pandas-and-matplotlib/](Beautiful Plots With Pandas and Matplotlib | The Data Science Lab)
 * [http://www.slideshare.net/PyData/interactive-financial-analytics-with-python-i-python-dr-yves-hilpisch](Interactive Financial Analytics with Python &amp; Ipython by Dr Yves Hilp…)
+
+* [https://www.dataquest.io/blog/python-data-visualization-libraries/](Comparing 7 Python data visualization tools)
+* [http://datascienceplus.com/t-tests/](how to performt-test)
+* [http://sebastianraschka.com/faq/docs/pca-scaling.html](mean centering doesnot affect covariance matrix)
+* [https://www.youtube.com/watch?v=DyGoHAP8B_s](Jupyter : Ipython, State Of Multiuser And Real Time Collaboration | SciPy )
+* 
