@@ -48,6 +48,7 @@
 * [https://s3.amazonaws.com/coursera-uploads/user-158f3d5617716b8cbb0cec96/975183/asst-4/6ec7fa90656511e5b9e6e76ed428288e.pdf](https://s3.amazonaws.com/coursera-uploads/user-158f3d5617716b8cbb0cec96/975183/asst-4/6ec7fa90656511e5b9e6e76ed428288e.pdf)
 * [https://s3.amazonaws.com/coursera-uploads/user-ea38d6280e11e24a888df50e/975183/asst-4/90f17570655f11e5930e37f2d9dab095.pdf](https://s3.amazonaws.com/coursera-uploads/user-ea38d6280e11e24a888df50e/975183/asst-4/90f17570655f11e5930e37f2d9dab095.pdf)
 * [https://s3.amazonaws.com/coursera-uploads/user-09fa0f457b4fc7f0d43497e5/975183/asst-4/a36446d0655d11e5bec5d94909633c37.pdf](https://s3.amazonaws.com/coursera-uploads/user-09fa0f457b4fc7f0d43497e5/975183/asst-4/a36446d0655d11e5bec5d94909633c37.pdf)
+* [https://rstudio-pubs-static.s3.amazonaws.com/77043_61f42ce24db046f48918693b12b9024d.html](Going The Distance: Manual or Automatic?)
 
 ### Data Analysis
 
@@ -67,7 +68,6 @@
 * [https://www.rstudio.com/wp-content/uploads/2015/03/rmarkdown-reference.pdf](https://www.rstudio.com/wp-content/uploads/2015/03/rmarkdown-reference.pdf)
 * [http://bxhorn.com/2013/correlation-plots/](Correlation Plots in R | New Energy Research)
 * [http://www.rpubs.com/martisak/29890](RPubs - Regression Models Course Project - Automatic Versus Manual Transmission)
-* [https://rstudio-pubs-static.s3.amazonaws.com/77043_61f42ce24db046f48918693b12b9024d.html](Going The Distance: Manual or Automatic?)
 * [http://stackoverflow.com/questions/21716567/use-ggpairs-to-create-this-plot](r - use ggpairs to create this plot - Stack Overflow)
 * [http://treycausey.com/data_science_interviews.html](Trey Causey – What it&#39;s like to be on the data science job market)
 * [http://blog.revolutionanalytics.com/2015/09/how-do-you-know-if-your-model-is-going-to-work-part-4-cross-validation-techniques-1.html](How do you know if your model is going to work? Part 4: Cross-validation techniques)
